@@ -1,27 +1,23 @@
 // Get {x, y} positions from event.
-export function getControlPosition(e) {
+export function getControlPosition(e: MouseEvent) {
     return offsetXYFromParentOf(e);
 }
 
 
 // Get from offsetParent
-export function offsetXYFromParentOf(evt) {
-    const offsetParent = evt.target.offsetParent || document.body;
-    const offsetParentRect = evt.offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
+export function offsetXYFromParentOf(evt: MouseEvent) {
+    const offsetParent = (evt.target as HTMLElement).offsetParent || document.body;
+    const offsetParentRect = offsetParent === document.body ? {left: 0, top: 0} : offsetParent.getBoundingClientRect();
 
     const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
     const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
-
-    /*const x = Math.round(evt.clientX + offsetParent.scrollLeft - offsetParentRect.left);
-    const y = Math.round(evt.clientY + offsetParent.scrollTop - offsetParentRect.top);*/
-
 
     return {x, y};
 }
 
 
 // Create an data object exposed by <DraggableCore>'s events
-export function createCoreData(lastX, lastY, x, y) {
+export function createCoreData(lastX: number | undefined, lastY: number | undefined, x: number, y: number) {
     // State changes are often (but not always!) async. We want the latest value.
     const isStart = !isNum(lastX);
 
@@ -30,20 +26,19 @@ export function createCoreData(lastX, lastY, x, y) {
         return {
             deltaX: 0, deltaY: 0,
             lastX: x, lastY: y,
-            x: x, y: y
+            x, y
         };
     } else {
         // Otherwise calculate proper values.
         return {
             deltaX: x - lastX, deltaY: y - lastY,
-            lastX: lastX, lastY: lastY,
-            x: x, y: y
+            lastX, lastY,
+            x, y
         };
     }
 }
 
 
-function isNum(num)  {
+function isNum(num: any)  {
     return typeof num === 'number' && !isNaN(num);
 }
-

@@ -1,13 +1,14 @@
 // https://medium.com/js-dojo/how-to-reduce-your-vue-js-bundle-size-with-webpack-3145bf5019b7
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const webpack = require('webpack');
+const { defineConfig } = require('@vue/cli-service')
 const PACKAGE = require('./package.json');
 
 const banner = PACKAGE.name + ' - ' + PACKAGE.version + ' | ' +
     '(c) 2015, ' + new Date().getFullYear() + '  ' + PACKAGE.author + ' | ' +
     PACKAGE.homepage;
 
-module.exports = {
+module.exports = defineConfig({
     configureWebpack: {
         output: {
             library: "VueGridLayout",
@@ -21,4 +22,4 @@ module.exports = {
     css: {
         extract: false
     },
-}
+});

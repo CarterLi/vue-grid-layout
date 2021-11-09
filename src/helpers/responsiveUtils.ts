@@ -1,5 +1,3 @@
-// @flow
-
 import {cloneLayout, compact, correctBounds} from './utils';
 
 import type {Layout} from './utils';
@@ -10,9 +8,9 @@ type Breakpoints = {lg?: number, md?: number, sm?: number, xs?: number, xxs?: nu
 /**
  * Given a width, find the highest breakpoint that matches is valid for it (width > breakpoint).
  *
- * @param  {Object} breakpoints Breakpoints object (e.g. {lg: 1200, md: 960, ...})
- * @param  {Number} width Screen width.
- * @return {String}       Highest breakpoint that is less than width.
+ * @param breakpoints Breakpoints object (e.g. {lg: 1200, md: 960, ...})
+ * @param width Screen width.
+ * @return Highest breakpoint that is less than width.
  */
 export function getBreakpointFromWidth(breakpoints: Breakpoints, width: number): Breakpoint {
   const sorted = sortBreakpoints(breakpoints);
@@ -27,9 +25,9 @@ export function getBreakpointFromWidth(breakpoints: Breakpoints, width: number):
 
 /**
  * Given a breakpoint, get the # of cols set for it.
- * @param  {String} breakpoint Breakpoint name.
- * @param  {Object} cols       Map of breakpoints to cols.
- * @return {Number}            Number of cols.
+ * @param breakpoint Breakpoint name.
+ * @param cols       Map of breakpoints to cols.
+ * @return Number of cols.
  */
 export function getColsFromBreakpoint(breakpoint: Breakpoint, cols: Breakpoints): number {
   if (!cols[breakpoint]) {
@@ -43,15 +41,14 @@ export function getColsFromBreakpoint(breakpoint: Breakpoint, cols: Breakpoints)
  *
  * This finds the layout above the new one and generates from it, if it exists.
  *
- * @param  {Array} orgLayout     Original layout.
- * @param  {Object} layouts     Existing layouts.
- * @param  {Array} breakpoints All breakpoints.
- * @param  {String} breakpoint New breakpoint.
- * @param  {String} breakpoint Last breakpoint (for fallback).
- * @param  {Number} cols       Column count at new breakpoint.
- * @param  {Boolean} verticalCompact Whether or not to compact the layout
- *   vertically.
- * @return {Array}             New layout.
+ * @param orgLayout     Original layout.
+ * @param layouts     Existing layouts.
+ * @param breakpoints All breakpoints.
+ * @param breakpoint New breakpoint.
+ * @param breakpoint Last breakpoint (for fallback).
+ * @param cols       Column count at new breakpoint.
+ * @param verticalCompact Whether or not to compact the layout vertically.
+ * @return New layout.
  */
 export function findOrGenerateResponsiveLayout(orgLayout: Layout, layouts: ResponsiveLayout, breakpoints: Breakpoints,
                                                breakpoint: Breakpoint, lastBreakpoint: Breakpoint,
@@ -75,8 +72,8 @@ export function findOrGenerateResponsiveLayout(orgLayout: Layout, layouts: Respo
 }
 
 export function generateResponsiveLayout(layout: Layout, breakpoints: Breakpoints,
-                                               breakpoint: Breakpoint, lastBreakpoint: Breakpoint,
-                                               cols: number, verticalCompact: boolean): Layout {
+                                         breakpoint: Breakpoint, lastBreakpoint: Breakpoint,
+                                         cols: number, verticalCompact: boolean): Layout {
   // If it already exists, just return it.
   /*if (layouts[breakpoint]) return cloneLayout(layouts[breakpoint]);
   // Find or generate the next layout
@@ -98,8 +95,8 @@ export function generateResponsiveLayout(layout: Layout, breakpoints: Breakpoint
  * Given breakpoints, return an array of breakpoints sorted by width. This is usually
  * e.g. ['xxs', 'xs', 'sm', ...]
  *
- * @param  {Object} breakpoints Key/value pair of breakpoint names to widths.
- * @return {Array}              Sorted breakpoints.
+ * @param breakpoints Key/value pair of breakpoint names to widths.
+ * @return Sorted breakpoints.
  */
 export function sortBreakpoints(breakpoints: Breakpoints): Array<Breakpoint> {
   const keys: Array<string> = Object.keys(breakpoints);

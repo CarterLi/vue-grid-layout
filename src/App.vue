@@ -77,9 +77,7 @@
                            @container-resized="containerResized"
                            @moved="moved"
                 >
-                    <!--<custom-drag-element :text="item.i"></custom-drag-element>-->
                     <test-element :text="item.i" @removeItem="removeItem($event)"></test-element>
-                    <!--<button @click="clicked">CLICK ME!</button>-->
                 </grid-item>
             </grid-layout>
             <hr/>
@@ -91,7 +89,6 @@
     import GridItem from './components/GridItem.vue';
     import GridLayout from './components/GridLayout.vue';
     import TestElement from './components/TestElement.vue';
-    // import CustomDragElement from './components/CustomDragElement.vue';
     import {getDocumentDir, setDocumentDir} from "./helpers/DOM";
 
     var testLayouts = {
@@ -170,7 +167,6 @@
             GridLayout,
             GridItem,
             TestElement,
-            // CustomDragElement,
         },
         data () {
             return {
@@ -288,35 +284,6 @@
         },
     }
 </script>
-
-<style>
-    /*    #app {
-            font-family: 'Avenir', Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-align: center;
-            color: #2c3e50;
-            margin-top: 60px;
-        }
-
-        h1, h2 {
-            font-weight: normal;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            display: inline-block;
-            margin: 0 10px;
-        }
-
-        a {
-            color: #42b983;
-        }*/
-</style>
 
 <style lang="scss">
 #app {

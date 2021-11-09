@@ -24,7 +24,6 @@
     "serve": "vue-cli-service serve",
     "build": "rimraf dist && vue-cli-service build",
     "build-lib": "rimraf dist && vue-cli-service build --target lib ./src/components/index.js",
-    "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "test:cover": "vue-cli-service test:unit --coverage"
   },
@@ -36,22 +35,21 @@
     "@interactjs/modifiers": "^1.10.11",
     "core-js": "^3.19.1",
     "mitt": "^3.0.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "resize-observer-polyfill": "^1.5.1",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "@babel/eslint-parser": "^7.16.0",
     "@vue/cli-plugin-babel": "^v5.0.0-rc.0",
-    "@vue/cli-plugin-eslint": "^v5.0.0-rc.0",
+    "@vue/cli-plugin-typescript": "^v5.0.0-rc.0",
     "@vue/cli-plugin-unit-jest": "^v5.0.0-rc.0",
     "@vue/cli-service": "^v5.0.0-rc.0",
     "@vue/compiler-sfc": "^3.2.21",
-    "babel-plugin-transform-flow-comments": "^6.22.0",
-    "eslint": "^8.2.0",
-    "eslint-plugin-vue": "^8.0.3",
+    "@vuedx/typescript-plugin-vue": "^0.7.4",
     "rimraf": "^3.0.2",
     "sass": "^1.43.4",
     "sass-loader": "^12.3.0",
+    "typescript": "^4.4.4",
     "vue": "^3.2.21",
     "vue-jest": "^3.0.7",
     "webpack-bundle-analyzer": "^4.5.0"
