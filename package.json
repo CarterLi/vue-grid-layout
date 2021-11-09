@@ -23,9 +23,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "rimraf dist && vue-cli-service build",
-    "build-lib": "rimraf dist && vue-cli-service build --target lib ./src/components/index.js",
-    "test:unit": "vue-cli-service test:unit",
-    "test:cover": "vue-cli-service test:unit --coverage"
+    "build-lib": "rimraf dist && vue-cli-service build --target lib ./src/components/index.ts"
   },
   "dependencies": {
     "@interactjs/actions": "^1.10.11",
@@ -42,14 +40,13 @@
     "@babel/core": "^7.16.0",
     "@vue/cli-plugin-babel": "^v5.0.0-rc.0",
     "@vue/cli-plugin-typescript": "^v5.0.0-rc.0",
-    "@vue/cli-plugin-unit-jest": "^v5.0.0-rc.0",
     "@vue/cli-service": "^v5.0.0-rc.0",
     "@vue/compiler-sfc": "^3.2.21",
     "@vuedx/typescript-plugin-vue": "^0.7.4",
+    "interactjs": "^1.10.11",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.4",
     "vue": "^3.2.21",
-    "vue-jest": "^3.0.7",
     "webpack-bundle-analyzer": "^4.5.0"
   }
 }

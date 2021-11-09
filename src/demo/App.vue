@@ -86,10 +86,10 @@
 </template>
 
 <script>
-    import GridItem from './components/GridItem.vue';
-    import GridLayout from './components/GridLayout.vue';
-    import TestElement from './components/TestElement.vue';
-    import {getDocumentDir, setDocumentDir} from "./helpers/DOM";
+    import GridItem from '@/components/GridItem.vue';
+    import GridLayout from '@/components/GridLayout.vue';
+    import TestElement from './TestElement.vue';
+    import {getDocumentDir, setDocumentDir} from "@/helpers/DOM";
 
     var testLayouts = {
         md: [

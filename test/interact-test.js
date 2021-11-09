@@ -17,7 +17,6 @@ function dragMoveListener (event) {
 // this is used later in the resizing and gesture demos
 window.dragMoveListener = dragMoveListener;
 
-
 interact('.resize-drag')
     .draggable({
         onmove: window.dragMoveListener,
