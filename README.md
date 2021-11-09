@@ -4,9 +4,9 @@
 
 <p align="center">
 <a href="https://www.npmjs.com/package/vue-grid-layout">
-    <img src="https://img.shields.io/npm/v/vue-grid-layout.svg"/> 
+    <img src="https://img.shields.io/npm/v/vue-grid-layout.svg"/>
     <img src="https://img.shields.io/npm/dm/vue-grid-layout.svg"/>
-</a> 
+</a>
 <a href="https://github.com/jbaysolutions/vue-grid-layout/releases">
     <img src="https://img.shields.io/github/size/jbaysolutions/vue-grid-layout/dist/vue-grid-layout.umd.min.js"/>
 </a>
@@ -17,6 +17,8 @@
 <h2 align="center">
 <a href="https://jbaysolutions.github.io/vue-grid-layout/" target="_blank">Documentation Website</a>
 </h2>
+
+---
 
 ## What is Vue Grid Layout?
 
@@ -33,33 +35,44 @@ vue-grid-layout is a grid layout system, like [Gridster](http://dsmorse.github.i
 * Automatic RTL support (resizing not working with RTL on 2.2.0)
 * Responsive
 
-## **Current version:** 2.3.12 (Supports Vue 2.2+)
-
-#### **For legacy browsers**, like IE11, use version [2.3.12-legacy](https://github.com/jbaysolutions/vue-grid-layout/tree/legacy)
-#### **For Vue 2.1.10 and below use version [2.1.3](https://github.com/jbaysolutions/vue-grid-layout/tree/2.1.3)**
-#### **For Vue 1 use version [1.0.3](https://github.com/jbaysolutions/vue-grid-layout/tree/1.0.3)** 
-
-## Documentation
-
-Check out the <a href="https://jbaysolutions.github.io/vue-grid-layout/" target="_blank">Documentation Website</a>
-
-<!--
-Chinese documentation: [简体中文](./README-zh_CN.md) 
--->
-
-#### Projects using vue-grid-layout
-
-- [Draxed](https://www.draxed.com/?utm_source=github&utm_medium=web&utm_campaign=vue-grid-layout)
-- [cryptotiles](https://www.cryptotiles.io/?utm_source=github&utm_medium=web&utm_campaign=vue-grid-layout)
-- [Data Providers](https://www.dataproviders.io/?utm_source=github&utm_medium=web&utm_campaign=vue-grid-layout)
-- [Cataholic](https://cataholic.glitch.me/)
-
-*Know of others? Create a PR to let me know!*
+## **Current version:** 3.0.0-beta1 (Supports Vue 3.x)
 
 
-## Contribute
 
-If you have a feature request, please add it as an issue or make a pull request.
+## Modification notice
 
+Code modified by [Carter Li](https://github.com/carterli), from the official [vue3-webpack branch](https://github.com/jbaysolutions/vue-grid-layout/tree/vue3-webpack)
 
-Developed by <a href="https://www.jbaysolutions.com">JBay Solutions</a> 
+Changes:
+
+1. Migrated to TypeScript, and [found a bug when migrating](https://github.com/jbaysolutions/vue-grid-layout/issues/632)
+1. Lots of code refacters, dead / commented code removals, ES6+ syntax migration.
+1. Use `resize-observer-polyfill` instead of `element-resize-detector` for better performance
+1. General dependencies upgrades, also removed some unused dependencies.
+
+## Usage
+
+```html
+<template>
+<grid-layout
+  v-model:layout="layout"
+  ...
+/>
+</template>
+<script>
+import { GridLayout, GridItem } from 'vue-grid-layout-eoi';
+
+export default {
+    components: { GridLayout, GridItem },
+    data() {
+        return {
+            layout: {
+                ...
+            },
+        };
+    },
+}
+</script>
+```
+
+See also the official demo: https://github.com/CarterLi/vue-grid-layout/blob/master/src/demo/App.vue#L39
