@@ -29,27 +29,31 @@
     "test:cover": "vue-cli-service test:unit --coverage"
   },
   "dependencies": {
-    "@interactjs/actions": "^1.10.2",
-    "@interactjs/auto-start": "^1.10.2",
-    "@interactjs/dev-tools": "^1.10.2",
-    "@interactjs/interactjs": "^1.10.2",
-    "@interactjs/modifiers": "^1.10.2",
-    "element-resize-detector": "^1.2.1",
-    "mitt": "^2.1.0"
+    "@interactjs/actions": "^1.10.11",
+    "@interactjs/auto-start": "^1.10.11",
+    "@interactjs/dev-tools": "^1.10.11",
+    "@interactjs/interactjs": "^1.10.11",
+    "@interactjs/modifiers": "^1.10.11",
+    "core-js": "^3.19.1",
+    "element-resize-detector": "^1.2.3",
+    "mitt": "^3.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.1",
-    "@vue/cli-plugin-eslint": "^3.4.1",
-    "@vue/cli-plugin-unit-jest": "^4.5.11",
-    "@vue/cli-service": "^4.5.10",
-    "@vue/compiler-sfc": "^3.0.5",
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-parser": "^7.16.0",
+    "@vue/cli-plugin-babel": "^v5.0.0-rc.0",
+    "@vue/cli-plugin-eslint": "^v5.0.0-rc.0",
+    "@vue/cli-plugin-unit-jest": "^v5.0.0-rc.0",
+    "@vue/cli-service": "^v5.0.0-rc.0",
+    "@vue/compiler-sfc": "^3.2.21",
     "babel-plugin-transform-flow-comments": "^6.22.0",
-    "eslint-plugin-vue": "^7.5.0",
-    "node-sass": "^4.13.0",
-    "rimraf": "^2.6.2",
-    "sass-loader": "^10.1.1",
-    "vue": "^3.0.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "rimraf": "^3.0.2",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "vue": "^3.2.21",
     "vue-jest": "^3.0.7",
-    "webpack-bundle-analyzer": "^3.9.0"
+    "webpack-bundle-analyzer": "^4.5.0"
   }
 }

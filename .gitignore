@@ -21,7 +21,7 @@ yarn-error.log*
 *.sln
 *.sw*
 
-yarn.lock
 yarn-error.log
+package-lock.json
 
 website/docs/dist
