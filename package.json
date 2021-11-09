@@ -47,8 +47,6 @@
     "@vue/compiler-sfc": "^3.2.21",
     "@vuedx/typescript-plugin-vue": "^0.7.4",
     "rimraf": "^3.0.2",
-    "sass": "^1.43.4",
-    "sass-loader": "^12.3.0",
     "typescript": "^4.4.4",
     "vue": "^3.2.21",
     "vue-jest": "^3.0.7",

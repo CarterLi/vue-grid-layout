@@ -187,36 +187,36 @@
                 marginY: 10,
             }
         },
-        mounted: function () {
+        mounted() {
             this.index = this.layout.length;
         },
         methods: {
-            clicked: function() {
+            clicked() {
                 window.alert("CLICK!");
             },
-            increaseWidth: function() {
+            increaseWidth() {
                 let width = document.getElementById("content").offsetWidth;
                 width += 20;
                 document.getElementById("content").style.width = width+"px";
             },
-            decreaseWidth: function() {
+            decreaseWidth() {
                 let width = document.getElementById("content").offsetWidth;
                 width -= 20;
                 document.getElementById("content").style.width = width+"px";
             },
-            removeItem: function(i) {
+            removeItem(i) {
                 console.log("### REMOVE " + i);
                 const index = this.layout.map(item => item.i).indexOf(i);
                 this.layout.splice(index, 1);
             },
-            addItem: function() {
+            addItem() {
                 // let self = this;
                 //console.log("### LENGTH: " + this.layout.length);
                 let item = {"x":0,"y":0,"w":2,"h":2,"i":this.index+"", whatever: "bbb"};
                 this.index++;
                 this.layout.push(item);
             },
-            addItemDynamically: function() {
+            addItemDynamically() {
                 const x = (this.layout.length * 2) % (this.colNum || 12);
                 const y = this.layout.length + (this.colNum || 12);
                 console.log("X=" + x + " Y=" + y)
@@ -230,19 +230,19 @@
                 this.index++;
                 this.layout.push(item);
             },
-            move: function(i, newX, newY){
+            move(i, newX, newY){
                 console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
             },
-            resize: function(i, newH, newW, newHPx, newWPx){
+            resize(i, newH, newW, newHPx, newWPx){
                 console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
             },
-            moved: function(i, newX, newY){
+            moved(i, newX, newY){
                 console.log("### MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
             },
-            resized: function(i, newH, newW, newHPx, newWPx){
+            resized(i, newH, newW, newHPx, newWPx){
                 console.log("### RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
             },
-            containerResized: function(i, newH, newW, newHPx, newWPx){
+            containerResized(i, newH, newW, newHPx, newWPx){
                 console.log("### CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
             },
             /**
@@ -260,24 +260,24 @@
                 //eventBus.$emit('directionchange');
             },
 
-            layoutCreatedEvent: function(newLayout){
+            layoutCreatedEvent(newLayout){
                 console.log("Created layout: ", newLayout)
             },
-            layoutBeforeMountEvent: function(newLayout){
+            layoutBeforeMountEvent(newLayout){
                 console.log("beforeMount layout: ", newLayout)
             },
-            layoutMountedEvent: function(newLayout){
+            layoutMountedEvent(newLayout){
                 console.log("Mounted layout: ", newLayout)
             },
-            layoutReadyEvent: function(newLayout){
+            layoutReadyEvent(newLayout){
                 console.log("Ready layout: ", newLayout)
                 this.layout = newLayout
             },
-            layoutUpdatedEvent: function(newLayout){
+            layoutUpdatedEvent(newLayout){
                 console.log("Updated layout: ", newLayout)
                 this.layout = newLayout
             },
-            breakpointChangedEvent: function(newBreakpoint, newLayout){
+            breakpointChangedEvent(newBreakpoint, newLayout){
                 console.log("breakpoint changed breakpoint=", newBreakpoint, ", layout: ", newLayout );
             }
 
@@ -285,7 +285,7 @@
     }
 </script>
 
-<style lang="scss">
+<style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
