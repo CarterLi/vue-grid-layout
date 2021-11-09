@@ -61,16 +61,17 @@ Changes:
 </template>
 <script>
 import { GridLayout, GridItem } from 'vue-grid-layout-eoi';
+import 'vue-grid-layout-eoi/dist/style.css';
 
 export default {
-    components: { GridLayout, GridItem },
-    data() {
-        return {
-            layout: {
-                ...
-            },
-        };
-    },
+  components: { GridLayout, GridItem },
+  data() {
+    return {
+      layout: {
+        ...
+      },
+    };
+  },
 }
 </script>
 ```

@@ -81,7 +81,7 @@
 }
 </style>
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core';
+import { defineComponent } from 'vue';
 import '@interactjs/auto-start'
 import '@interactjs/actions/drag'
 import '@interactjs/actions/resize'
@@ -89,10 +89,10 @@ import '@interactjs/modifiers'
 import '@interactjs/dev-tools'
 import interact from '@interactjs/interact'
 
-import {setTopLeft, setTopRight, setTransformRtl, setTransform} from '@/helpers/utils';
-import {getControlPosition, createCoreData} from '@/helpers/draggableUtils';
-import {getColsFromBreakpoint} from '@/helpers/responsiveUtils';
-import {getDocumentDir} from "@/helpers/DOM";
+import {setTopLeft, setTopRight, setTransformRtl, setTransform} from '../helpers/utils';
+import {getControlPosition, createCoreData} from '../helpers/draggableUtils';
+import {getColsFromBreakpoint} from '../helpers/responsiveUtils';
+import {getDocumentDir} from "../helpers/DOM";
 
 export default defineComponent({
     name: "GridItem",

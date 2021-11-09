@@ -19,11 +19,11 @@
 <script lang="ts">
 import mitt from 'mitt';
 import ResizeObserver from "resize-observer-polyfill";
-import { defineComponent } from '@vue/runtime-core';
+import { defineComponent } from 'vue';
 
-import {bottom, compact, getLayoutItem, moveElement, validateLayout, cloneLayout, getAllCollisions} from '@/helpers/utils';
-import {getBreakpointFromWidth, getColsFromBreakpoint, findOrGenerateResponsiveLayout} from "@/helpers/responsiveUtils";
-import type {Layout} from '@/helpers/utils';
+import {bottom, compact, getLayoutItem, moveElement, validateLayout, cloneLayout, getAllCollisions} from '../helpers/utils';
+import {getBreakpointFromWidth, getColsFromBreakpoint, findOrGenerateResponsiveLayout} from "../helpers/responsiveUtils";
+import type {Layout} from '../helpers/utils';
 
 import GridItem from './GridItem.vue'
 

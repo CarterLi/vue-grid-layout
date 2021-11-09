@@ -18,34 +18,30 @@
   },
   "author": "Carter Li <carter.li@eoitek.com>",
   "homepage": "https://github.com/carterli/vue-grid-layout",
-  "main": "dist/vue-grid-layout-eoi.common.js",
-  "unpkg": "dist/vue-grid-layout-eoi.umd.min.js",
+  "main": "dist/grid-layout.es.js",
+  "unpkg": "dist/grid-layout.umd.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build-lib": "vue-cli-service build --target lib ./src/components/index.ts"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "dependencies": {
     "@interactjs/actions": "^1.10.11",
     "@interactjs/auto-start": "^1.10.11",
     "@interactjs/dev-tools": "^1.10.11",
-    "@interactjs/interactjs": "^1.10.11",
+    "@interactjs/interact": "^1.10.11",
     "@interactjs/modifiers": "^1.10.11",
-    "core-js": "^3.19.1",
+    "@interactjs/utils": "^1.10.11",
     "mitt": "^3.0.0",
     "resize-observer-polyfill": "^1.5.1",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "vue": "^3.2.21"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@vue/cli-plugin-babel": "^v5.0.0-rc.0",
-    "@vue/cli-plugin-typescript": "^v5.0.0-rc.0",
-    "@vue/cli-service": "^v5.0.0-rc.0",
-    "@vue/compiler-sfc": "^3.2.21",
-    "@vuedx/typescript-plugin-vue": "^0.7.4",
-    "interactjs": "^1.10.11",
+    "@types/node": "^16.11.7",
+    "@vitejs/plugin-vue": "^1.9.4",
     "typescript": "^4.4.4",
-    "vue": "^3.2.21",
-    "webpack-bundle-analyzer": "^4.5.0"
+    "vite": "^2.6.13",
+    "vue-tsc": "^0.29.2"
   }
 }
