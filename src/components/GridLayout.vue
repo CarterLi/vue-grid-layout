@@ -18,14 +18,12 @@
 </style>
 <script>
     import mitt from 'mitt';
-    const elementResizeDetectorMaker = require("element-resize-detector");
+    import ResizeObserver from "resize-observer-polyfill";
 
     import {bottom, compact, getLayoutItem, moveElement, validateLayout, cloneLayout, getAllCollisions} from '@/helpers/utils';
     import {getBreakpointFromWidth, getColsFromBreakpoint, findOrGenerateResponsiveLayout} from "@/helpers/responsiveUtils";
-    //var eventBus = require('./eventBus');
 
     import GridItem from './GridItem.vue'
-    import {addWindowEventListener, removeWindowEventListener} from "@/helpers/DOM";
 
     export default {
         name: "GridLayout",
@@ -154,10 +152,7 @@
             //Remove listeners
             this.eventBus.off('resizeEvent', this.resizeEventHandler);
             this.eventBus.off('dragEvent', this.dragEventHandler);
-            removeWindowEventListener("resize", this.onWindowResize);
-            if (this.erd) {
-                this.erd.uninstall(this.$refs.item);
-            }
+            if (this.ro) this.ro.unobserve(this.$el);
         },
         beforeMount: function() {
             this.$emit('layout-before-mount', this.layout);
@@ -166,16 +161,15 @@
             this.$emit('layout-mounted', this.layout);
             this.$nextTick(function () {
                 validateLayout(this.layout);
+                const self = this;
 
                 this.originalLayout = this.layout;
-                const self = this;
                 this.$nextTick(function() {
                     self.onWindowResize();
 
                     self.initResponsiveFeatures();
 
                     //self.width = self.$el.offsetWidth;
-                    addWindowEventListener('resize', self.onWindowResize);
 
                     compact(self.layout, self.verticalCompact);
 
@@ -183,14 +177,10 @@
 
                     self.updateHeight();
                     self.$nextTick(function () {
-                        this.erd = elementResizeDetectorMaker({
-                            strategy: "scroll", //<- For ultra performance.
-                            // See https://github.com/wnr/element-resize-detector/issues/110 about callOnAdd.
-                            callOnAdd: false,
-                        });
-                        this.erd.listenTo(self.$refs.item, function () {
+                        self.ro = new ResizeObserver(() => {
                             self.onWindowResize();
                         });
+                        self.ro.observe(this.$el);
                     });
                 });
             });
