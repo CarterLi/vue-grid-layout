@@ -1,5 +1,5 @@
 <template>
-    <div ref="item" class="vue-grid-layout" :style="mergedStyle">
+    <div class="vue-grid-layout" :style="mergedStyle">
         <slot></slot>
         <grid-item class="vue-grid-placeholder"
                    v-show="isDragging"
@@ -288,8 +288,8 @@
                 };
             },
             onWindowResize: function () {
-                if (this.$refs !== null && this.$refs.item !== null && this.$refs.item !== undefined) {
-                    this.width = this.$refs.item.offsetWidth;
+                if (this.$el) {
+                    this.width = this.$el.offsetWidth;
                 }
                 this.eventBus.emit("resizeEvent", {});
             },

@@ -1,6 +1,5 @@
 <template>
-    <div ref="item"
-         class="vue-grid-item"
+    <div class="vue-grid-item"
          :class="classObj"
          :style="style"
     >
@@ -763,7 +762,7 @@
             tryMakeDraggable: function(){
                 const self = this;
                 if (this.interactObj === null || this.interactObj === undefined) {
-                    this.interactObj = interact(this.$refs.item);
+                    this.interactObj = interact(this.$el);
                     if (!this.useStyleCursor) {
                         this.interactObj.styleCursor(false);
                     }
@@ -790,7 +789,7 @@
             tryMakeResizable: function(){
                 const self = this;
                 if (this.interactObj === null || this.interactObj === undefined) {
-                    this.interactObj = interact(this.$refs.item);
+                    this.interactObj = interact(this.$el);
                     if (!this.useStyleCursor) {
                         this.interactObj.styleCursor(false);
                     }
@@ -850,7 +849,7 @@
                 this.previousW = this.innerW;
                 this.previousH = this.innerH;
 
-                let newSize=this.$refs.item.children[0].getBoundingClientRect();
+                let newSize=this.$el.firstElementChild.getBoundingClientRect();
                 let pos = this.calcWH(newSize.height, newSize.width, true);
                 if (pos.w < this.minW) {
                     pos.w = this.minW;
