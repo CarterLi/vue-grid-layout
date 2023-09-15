@@ -1,415 +1,302 @@
-var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
-var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __spreadValues = (a, b) => {
-  for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
-  if (__getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
-    }
-  return a;
-};
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-import { defineComponent, openBlock, createElementBlock, normalizeClass, normalizeStyle, renderSlot, createCommentVNode, resolveComponent, withDirectives, createVNode, vShow } from "vue";
+import { defineComponent as k, openBlock as y, createElementBlock as b, normalizeClass as x, normalizeStyle as S, renderSlot as $, createCommentVNode as Y, resolveComponent as _, withDirectives as j, createVNode as I, vShow as A } from "vue";
 import "@interactjs/auto-start";
 import "@interactjs/actions/drag";
 import "@interactjs/actions/resize";
 import "@interactjs/modifiers";
 import "@interactjs/dev-tools";
-import interact from "@interactjs/interact";
-import mitt from "mitt";
-import ResizeObserver from "resize-observer-polyfill";
-function bottom(layout) {
-  let max = 0, bottomY;
-  for (let i = 0, len = layout.length; i < len; i++) {
-    bottomY = layout[i].y + layout[i].h;
-    if (bottomY > max)
-      max = bottomY;
+import p from "@interactjs/interact";
+import q from "mitt";
+import F from "resize-observer-polyfill";
+function T(t) {
+  let e = 0, i;
+  for (let s = 0, r = t.length; s < r; s++)
+    i = t[s].y + t[s].h, i > e && (e = i);
+  return e;
+}
+function w(t) {
+  const e = Array(t.length);
+  for (let i = 0, s = t.length; i < s; i++)
+    e[i] = P(t[i]);
+  return e;
+}
+function P(t) {
+  return JSON.parse(JSON.stringify(t));
+}
+function M(t, e) {
+  return !(t === e || t.x + t.w <= e.x || t.x >= e.x + e.w || t.y + t.h <= e.y || t.y >= e.y + e.h);
+}
+function f(t, e) {
+  const i = E(t), s = L(t), r = Array(t.length);
+  for (let n = 0, a = s.length; n < a; n++) {
+    let h = s[n];
+    h.static || (h = G(i, h, e), i.push(h)), r[t.indexOf(h)] = h, h.moved = !1;
   }
-  return max;
+  return r;
 }
-function cloneLayout(layout) {
-  const newLayout = Array(layout.length);
-  for (let i = 0, len = layout.length; i < len; i++) {
-    newLayout[i] = cloneLayoutItem(layout[i]);
+function G(t, e, i) {
+  if (i)
+    for (; e.y > 0 && !m(t, e); )
+      e.y--;
+  let s;
+  for (; s = m(t, e); )
+    e.y = s.y + s.h;
+  return e;
+}
+function V(t, e) {
+  const i = E(t);
+  for (let s = 0, r = t.length; s < r; s++) {
+    const n = t[s];
+    if (n.x + n.w > e.cols && (n.x = e.cols - n.w), n.x < 0 && (n.x = 0, n.w = e.cols), !n.static)
+      i.push(n);
+    else
+      for (; m(i, n); )
+        n.y++;
   }
-  return newLayout;
+  return t;
 }
-function cloneLayoutItem(layoutItem) {
-  return JSON.parse(JSON.stringify(layoutItem));
+function R(t, e) {
+  return t.find((i) => i.i === e) || { x: 0, y: 0, w: 0, h: 0, i: "" };
 }
-function collides(l1, l2) {
-  if (l1 === l2)
-    return false;
-  if (l1.x + l1.w <= l2.x)
-    return false;
-  if (l1.x >= l2.x + l2.w)
-    return false;
-  if (l1.y + l1.h <= l2.y)
-    return false;
-  if (l1.y >= l2.y + l2.h)
-    return false;
-  return true;
+function m(t, e) {
+  for (let i = 0, s = t.length; i < s; i++)
+    if (M(t[i], e))
+      return t[i];
 }
-function compact(layout, verticalCompact) {
-  const compareWith = getStatics(layout);
-  const sorted = sortLayoutItemsByRowCol(layout);
-  const out = Array(layout.length);
-  for (let i = 0, len = sorted.length; i < len; i++) {
-    let l = sorted[i];
-    if (!l.static) {
-      l = compactItem(compareWith, l, verticalCompact);
-      compareWith.push(l);
-    }
-    out[layout.indexOf(l)] = l;
-    l.moved = false;
+function D(t, e) {
+  return t.filter((i) => M(i, e));
+}
+function E(t) {
+  return t.filter((e) => e.static);
+}
+function v(t, e, i, s, r, n) {
+  if (e.static)
+    return t;
+  const a = e.x, h = e.y, d = s && e.y > s;
+  typeof i == "number" && (e.x = i), typeof s == "number" && (e.y = s), e.moved = !0;
+  let o = L(t);
+  d && (o = o.reverse());
+  const l = D(o, e);
+  if (n && l.length)
+    return e.x = a, e.y = h, e.moved = !1, t;
+  for (let u = 0, g = l.length; u < g; u++) {
+    const c = l[u];
+    c.moved || e.y > c.y && e.y - c.y > c.h / 4 || (c.static ? t = H(t, c, e, r) : t = H(t, e, c, r));
   }
-  return out;
+  return t;
 }
-function compactItem(compareWith, l, verticalCompact) {
-  if (verticalCompact) {
-    while (l.y > 0 && !getFirstCollision(compareWith, l)) {
-      l.y--;
-    }
-  }
-  let collides2;
-  while (collides2 = getFirstCollision(compareWith, l)) {
-    l.y = collides2.y + collides2.h;
-  }
-  return l;
-}
-function correctBounds(layout, bounds) {
-  const collidesWith = getStatics(layout);
-  for (let i = 0, len = layout.length; i < len; i++) {
-    const l = layout[i];
-    if (l.x + l.w > bounds.cols)
-      l.x = bounds.cols - l.w;
-    if (l.x < 0) {
-      l.x = 0;
-      l.w = bounds.cols;
-    }
-    if (!l.static)
-      collidesWith.push(l);
-    else {
-      while (getFirstCollision(collidesWith, l)) {
-        l.y++;
-      }
-    }
-  }
-  return layout;
-}
-function getLayoutItem(layout, id) {
-  return layout.find((x) => x.i === id) || { x: 0, y: 0, w: 0, h: 0, i: "" };
-}
-function getFirstCollision(layout, layoutItem) {
-  for (let i = 0, len = layout.length; i < len; i++) {
-    if (collides(layout[i], layoutItem))
-      return layout[i];
-  }
-}
-function getAllCollisions(layout, layoutItem) {
-  return layout.filter((l) => collides(l, layoutItem));
-}
-function getStatics(layout) {
-  return layout.filter((l) => l.static);
-}
-function moveElement(layout, l, x, y, isUserAction, preventCollision) {
-  if (l.static)
-    return layout;
-  const oldX = l.x;
-  const oldY = l.y;
-  const movingUp = y && l.y > y;
-  if (typeof x === "number")
-    l.x = x;
-  if (typeof y === "number")
-    l.y = y;
-  l.moved = true;
-  let sorted = sortLayoutItemsByRowCol(layout);
-  if (movingUp)
-    sorted = sorted.reverse();
-  const collisions = getAllCollisions(sorted, l);
-  if (preventCollision && collisions.length) {
-    l.x = oldX;
-    l.y = oldY;
-    l.moved = false;
-    return layout;
-  }
-  for (let i = 0, len = collisions.length; i < len; i++) {
-    const collision = collisions[i];
-    if (collision.moved)
-      continue;
-    if (l.y > collision.y && l.y - collision.y > collision.h / 4)
-      continue;
-    if (collision.static) {
-      layout = moveElementAwayFromCollision(layout, collision, l, isUserAction);
-    } else {
-      layout = moveElementAwayFromCollision(layout, l, collision, isUserAction);
-    }
-  }
-  return layout;
-}
-function moveElementAwayFromCollision(layout, collidesWith, itemToMove, isUserAction) {
-  const preventCollision = false;
-  if (isUserAction) {
-    const fakeItem = {
-      x: itemToMove.x,
-      y: itemToMove.y,
-      w: itemToMove.w,
-      h: itemToMove.h,
+function H(t, e, i, s) {
+  if (s) {
+    const n = {
+      x: i.x,
+      y: i.y,
+      w: i.w,
+      h: i.h,
       i: "-1"
     };
-    fakeItem.y = Math.max(collidesWith.y - itemToMove.h, 0);
-    if (!getFirstCollision(layout, fakeItem)) {
-      return moveElement(layout, itemToMove, void 0, fakeItem.y, preventCollision);
-    }
+    if (n.y = Math.max(e.y - i.h, 0), !m(t, n))
+      return v(t, i, void 0, n.y, !1);
   }
-  return moveElement(layout, itemToMove, void 0, itemToMove.y + 1, preventCollision);
+  return v(t, i, void 0, i.y + 1, !1);
 }
-function setTransform(top, left, width, height) {
-  const translate = "translate3d(" + left + "px," + top + "px, 0)";
+function U(t, e, i, s) {
   return {
-    transform: translate,
-    width: width + "px",
-    height: height + "px",
+    transform: "translate3d(" + e + "px," + t + "px, 0)",
+    width: i + "px",
+    height: s + "px",
     position: "absolute"
   };
 }
-function setTransformRtl(top, right, width, height) {
-  const translate = "translate3d(" + right * -1 + "px," + top + "px, 0)";
+function J(t, e, i, s) {
   return {
-    transform: translate,
-    width: width + "px",
-    height: height + "px",
+    transform: "translate3d(" + e * -1 + "px," + t + "px, 0)",
+    width: i + "px",
+    height: s + "px",
     position: "absolute"
   };
 }
-function setTopLeft(top, left, width, height) {
+function K(t, e, i, s) {
   return {
-    top: top + "px",
-    left: left + "px",
-    width: width + "px",
-    height: height + "px",
+    top: t + "px",
+    left: e + "px",
+    width: i + "px",
+    height: s + "px",
     position: "absolute"
   };
 }
-function setTopRight(top, right, width, height) {
+function Q(t, e, i, s) {
   return {
-    top: top + "px",
-    right: right + "px",
-    width: width + "px",
-    height: height + "px",
+    top: t + "px",
+    right: e + "px",
+    width: i + "px",
+    height: s + "px",
     position: "absolute"
   };
 }
-function sortLayoutItemsByRowCol(layout) {
-  return [].concat(layout).sort(function(a, b) {
-    if (a.y === b.y && a.x === b.x) {
-      return 0;
-    }
-    if (a.y > b.y || a.y === b.y && a.x > b.x) {
-      return 1;
-    }
-    return -1;
+function L(t) {
+  return [].concat(t).sort(function(e, i) {
+    return e.y === i.y && e.x === i.x ? 0 : e.y > i.y || e.y === i.y && e.x > i.x ? 1 : -1;
   });
 }
-function validateLayout(layout, contextName = "Layout") {
-  const subProps = ["x", "y", "w", "h"];
-  let keyArr = [];
-  if (!Array.isArray(layout))
-    throw new Error(contextName + " must be an array!");
-  for (let i = 0, len = layout.length; i < len; i++) {
-    const item = layout[i];
-    for (let j = 0; j < subProps.length; j++) {
-      if (typeof item[subProps[j]] !== "number") {
-        throw new Error("VueGridLayout: " + contextName + "[" + i + "]." + subProps[j] + " must be a number!");
-      }
-    }
-    if (item.i === void 0 || item.i === null) {
-      throw new Error("VueGridLayout: " + contextName + "[" + i + "].i cannot be null!");
-    }
-    if (typeof item.i !== "number" && typeof item.i !== "string") {
-      throw new Error("VueGridLayout: " + contextName + "[" + i + "].i must be a string or number!");
-    }
-    if (keyArr.indexOf(item.i) >= 0) {
-      throw new Error("VueGridLayout: " + contextName + "[" + i + "].i must be unique!");
-    }
-    keyArr.push(item.i);
-    if (item.static !== void 0 && typeof item.static !== "boolean") {
-      throw new Error("VueGridLayout: " + contextName + "[" + i + "].static must be a boolean!");
-    }
+function Z(t, e = "Layout") {
+  const i = ["x", "y", "w", "h"];
+  let s = [];
+  if (!Array.isArray(t))
+    throw new Error(e + " must be an array!");
+  for (let r = 0, n = t.length; r < n; r++) {
+    const a = t[r];
+    for (let h = 0; h < i.length; h++)
+      if (typeof a[i[h]] != "number")
+        throw new Error("VueGridLayout: " + e + "[" + r + "]." + i[h] + " must be a number!");
+    if (a.i === void 0 || a.i === null)
+      throw new Error("VueGridLayout: " + e + "[" + r + "].i cannot be null!");
+    if (typeof a.i != "number" && typeof a.i != "string")
+      throw new Error("VueGridLayout: " + e + "[" + r + "].i must be a string or number!");
+    if (s.indexOf(a.i) >= 0)
+      throw new Error("VueGridLayout: " + e + "[" + r + "].i must be unique!");
+    if (s.push(a.i), a.static !== void 0 && typeof a.static != "boolean")
+      throw new Error("VueGridLayout: " + e + "[" + r + "].static must be a boolean!");
   }
 }
-function getControlPosition(e) {
-  return offsetXYFromParentOf(e);
+function B(t) {
+  return tt(t);
 }
-function offsetXYFromParentOf(evt) {
-  const offsetParent = evt.target.offsetParent || document.body;
-  const offsetParentRect = offsetParent === document.body ? { left: 0, top: 0 } : offsetParent.getBoundingClientRect();
-  const x = evt.clientX + offsetParent.scrollLeft - offsetParentRect.left;
-  const y = evt.clientY + offsetParent.scrollTop - offsetParentRect.top;
-  return { x, y };
+function tt(t) {
+  const e = t.target.offsetParent || document.body, i = e === document.body ? { left: 0, top: 0 } : e.getBoundingClientRect(), s = t.clientX + e.scrollLeft - i.left, r = t.clientY + e.scrollTop - i.top;
+  return { x: s, y: r };
 }
-function createCoreData(lastX, lastY, x, y) {
-  const isStart = !isNum(lastX);
-  if (isStart) {
-    return {
-      deltaX: 0,
-      deltaY: 0,
-      lastX: x,
-      lastY: y,
-      x,
-      y
-    };
-  } else {
-    return {
-      deltaX: x - lastX,
-      deltaY: y - lastY,
-      lastX,
-      lastY,
-      x,
-      y
-    };
+function W(t, e, i, s) {
+  return et(t) ? {
+    deltaX: i - t,
+    deltaY: s - e,
+    lastX: t,
+    lastY: e,
+    x: i,
+    y: s
+  } : {
+    deltaX: 0,
+    deltaY: 0,
+    lastX: i,
+    lastY: s,
+    x: i,
+    y: s
+  };
+}
+function et(t) {
+  return typeof t == "number" && !isNaN(t);
+}
+function it(t, e) {
+  const i = N(t);
+  let s = i[0];
+  for (let r = 1, n = i.length; r < n; r++) {
+    const a = i[r];
+    e > t[a] && (s = a);
   }
+  return s;
 }
-function isNum(num) {
-  return typeof num === "number" && !isNaN(num);
+function z(t, e) {
+  if (!e[t])
+    throw new Error("ResponsiveGridLayout: `cols` entry for breakpoint " + t + " is missing!");
+  return e[t];
 }
-function getBreakpointFromWidth(breakpoints, width) {
-  const sorted = sortBreakpoints(breakpoints);
-  let matching = sorted[0];
-  for (let i = 1, len = sorted.length; i < len; i++) {
-    const breakpointName = sorted[i];
-    if (width > breakpoints[breakpointName])
-      matching = breakpointName;
-  }
-  return matching;
-}
-function getColsFromBreakpoint(breakpoint, cols) {
-  if (!cols[breakpoint]) {
-    throw new Error("ResponsiveGridLayout: `cols` entry for breakpoint " + breakpoint + " is missing!");
-  }
-  return cols[breakpoint];
-}
-function findOrGenerateResponsiveLayout(orgLayout, layouts, breakpoints, breakpoint, lastBreakpoint, cols, verticalCompact) {
-  if (layouts[breakpoint])
-    return cloneLayout(layouts[breakpoint]);
-  let layout = orgLayout;
-  const breakpointsSorted = sortBreakpoints(breakpoints);
-  const breakpointsAbove = breakpointsSorted.slice(breakpointsSorted.indexOf(breakpoint));
-  for (let i = 0, len = breakpointsAbove.length; i < len; i++) {
-    const b = breakpointsAbove[i];
-    if (layouts[b]) {
-      layout = layouts[b];
+function st(t, e, i, s, r, n, a) {
+  if (e[s])
+    return w(e[s]);
+  let h = t;
+  const d = N(i), o = d.slice(d.indexOf(s));
+  for (let l = 0, u = o.length; l < u; l++) {
+    const g = o[l];
+    if (e[g]) {
+      h = e[g];
       break;
     }
   }
-  layout = cloneLayout(layout || []);
-  return compact(correctBounds(layout, { cols }), verticalCompact);
+  return h = w(h || []), f(V(h, { cols: n }), a);
 }
-function sortBreakpoints(breakpoints) {
-  const keys = Object.keys(breakpoints);
-  return keys.sort(function(a, b) {
-    return breakpoints[a] - breakpoints[b];
+function N(t) {
+  return Object.keys(t).sort(function(i, s) {
+    return t[i] - t[s];
   });
 }
-let currentDir = "auto";
-function getDocumentDir() {
-  if (typeof document === "undefined") {
-    return currentDir;
-  }
-  return document.documentElement.dir;
+let rt = "auto";
+function C() {
+  return typeof document > "u" ? rt : document.documentElement.dir;
 }
-var GridItem_vue_vue_type_style_index_0_scoped_true_lang = /* @__PURE__ */ (() => ".vue-grid-item[data-v-5f50ad7e]{touch-action:none;transition:all .2s ease;transition-property:left,top,right}.vue-grid-item.no-touch[data-v-5f50ad7e]{touch-action:none}.vue-grid-item.cssTransforms[data-v-5f50ad7e]{transition-property:transform;left:0;right:auto}.vue-grid-item.cssTransforms.render-rtl[data-v-5f50ad7e]{left:auto;right:0}.vue-grid-item.resizing[data-v-5f50ad7e]{opacity:.6;z-index:3}.vue-grid-item.vue-draggable-dragging[data-v-5f50ad7e]{transition:none;z-index:3}.vue-grid-item.vue-grid-placeholder[data-v-5f50ad7e]{background:red;opacity:.2;transition-duration:.1s;z-index:2;user-select:none}.vue-grid-item>.vue-resizable-handle[data-v-5f50ad7e]{position:absolute;width:20px;height:20px;bottom:0;right:0;background:url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pg08IS0tIEdlbmVyYXRvcjogQWRvYmUgRmlyZXdvcmtzIENTNiwgRXhwb3J0IFNWRyBFeHRlbnNpb24gYnkgQWFyb24gQmVhbGwgKGh0dHA6Ly9maXJld29ya3MuYWJlYWxsLmNvbSkgLiBWZXJzaW9uOiAwLjYuMSAgLS0+DTwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DTxzdmcgaWQ9IlVudGl0bGVkLVBhZ2UlMjAxIiB2aWV3Qm94PSIwIDAgNiA2IiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojZmZmZmZmMDAiIHZlcnNpb249IjEuMSINCXhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbDpzcGFjZT0icHJlc2VydmUiDQl4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjZweCIgaGVpZ2h0PSI2cHgiDT4NCTxnIG9wYWNpdHk9IjAuMzAyIj4NCQk8cGF0aCBkPSJNIDYgNiBMIDAgNiBMIDAgNC4yIEwgNCA0LjIgTCA0LjIgNC4yIEwgNC4yIDAgTCA2IDAgTCA2IDYgTCA2IDYgWiIgZmlsbD0iIzAwMDAwMCIvPg0JPC9nPg08L3N2Zz4=);background-position:bottom right;padding:0 3px 3px 0;background-repeat:no-repeat;background-origin:content-box;box-sizing:border-box;cursor:se-resize}.vue-grid-item>.vue-rtl-resizable-handle[data-v-5f50ad7e]{bottom:0;left:0;background:url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAuMDAwMDAwMDAwMDAwMDAyIiBoZWlnaHQ9IjEwLjAwMDAwMDAwMDAwMDAwMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KIDwhLS0gQ3JlYXRlZCB3aXRoIE1ldGhvZCBEcmF3IC0gaHR0cDovL2dpdGh1Yi5jb20vZHVvcGl4ZWwvTWV0aG9kLURyYXcvIC0tPgogPGc+CiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPgogIDxyZWN0IGZpbGw9Im5vbmUiIGlkPSJjYW52YXNfYmFja2dyb3VuZCIgaGVpZ2h0PSIxMiIgd2lkdGg9IjEyIiB5PSItMSIgeD0iLTEiLz4KICA8ZyBkaXNwbGF5PSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgeT0iMCIgeD0iMCIgaGVpZ2h0PSIxMDAlIiB3aWR0aD0iMTAwJSIgaWQ9ImNhbnZhc0dyaWQiPgogICA8cmVjdCBmaWxsPSJ1cmwoI2dyaWRwYXR0ZXJuKSIgc3Ryb2tlLXdpZHRoPSIwIiB5PSIwIiB4PSIwIiBoZWlnaHQ9IjEwMCUiIHdpZHRoPSIxMDAlIi8+CiAgPC9nPgogPC9nPgogPGc+CiAgPHRpdGxlPkxheWVyIDE8L3RpdGxlPgogIDxsaW5lIGNhbnZhcz0iI2ZmZmZmZiIgY2FudmFzLW9wYWNpdHk9IjEiIHN0cm9rZS1saW5lY2FwPSJ1bmRlZmluZWQiIHN0cm9rZS1saW5lam9pbj0idW5kZWZpbmVkIiBpZD0ic3ZnXzEiIHkyPSItNzAuMTc4NDA3IiB4Mj0iMTI0LjQ2NDE3NSIgeTE9Ii0zOC4zOTI3MzciIHgxPSIxNDQuODIxMjg5IiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlPSIjMDAwIiBmaWxsPSJub25lIi8+CiAgPGxpbmUgc3Ryb2tlPSIjNjY2NjY2IiBzdHJva2UtbGluZWNhcD0idW5kZWZpbmVkIiBzdHJva2UtbGluZWpvaW49InVuZGVmaW5lZCIgaWQ9InN2Z181IiB5Mj0iOS4xMDY5NTciIHgyPSIwLjk0NzI0NyIgeTE9Ii0wLjAxODEyOCIgeDE9IjAuOTQ3MjQ3IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KICA8bGluZSBzdHJva2UtbGluZWNhcD0idW5kZWZpbmVkIiBzdHJva2UtbGluZWpvaW49InVuZGVmaW5lZCIgaWQ9InN2Z183IiB5Mj0iOSIgeDI9IjEwLjA3MzUyOSIgeTE9IjkiIHgxPSItMC42NTU2NCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2U9IiM2NjY2NjYiIGZpbGw9Im5vbmUiLz4KIDwvZz4KPC9zdmc+);background-position:bottom left;padding-left:3px;background-repeat:no-repeat;background-origin:content-box;cursor:sw-resize;right:auto}.vue-grid-item.disable-userselect[data-v-5f50ad7e]{user-select:none}\n")();
-var _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _sfc_main$1 = defineComponent({
+const nt = k({
   name: "GridItem",
   props: {
     isDraggable: {
       type: Boolean,
-      required: false,
+      required: !1,
       default: null
     },
     isResizable: {
       type: Boolean,
-      required: false,
+      required: !1,
       default: null
     },
     static: {
       type: Boolean,
-      required: false,
-      default: false
+      required: !1,
+      default: !1
     },
     minH: {
       type: Number,
-      required: false,
+      required: !1,
       default: 1
     },
     minW: {
       type: Number,
-      required: false,
+      required: !1,
       default: 1
     },
     maxH: {
       type: Number,
-      required: false,
-      default: Infinity
+      required: !1,
+      default: 1 / 0
     },
     maxW: {
       type: Number,
-      required: false,
-      default: Infinity
+      required: !1,
+      default: 1 / 0
     },
     x: {
       type: Number,
-      required: true
+      required: !0
     },
     y: {
       type: Number,
-      required: true
+      required: !0
     },
     w: {
       type: Number,
-      required: true
+      required: !0
     },
     h: {
       type: Number,
-      required: true
+      required: !0
     },
     i: {
-      required: true
+      required: !0
     },
     dragIgnoreFrom: {
       type: String,
-      required: false,
+      required: !1,
       default: "a, button"
     },
     dragAllowFrom: {
       type: String,
-      required: false,
+      required: !1,
       default: null
     },
     resizeIgnoreFrom: {
       type: String,
-      required: false,
+      required: !1,
       default: "a, button"
     },
     preserveAspectRatio: {
       type: Boolean,
-      required: false,
-      default: false
+      required: !1,
+      default: !1
     }
   },
   inject: ["eventBus", "layout"],
@@ -419,23 +306,23 @@ const _sfc_main$1 = defineComponent({
       containerWidth: 100,
       rowHeight: 30,
       margin: [10, 10],
-      maxRows: Infinity,
+      maxRows: 1 / 0,
       draggable: null,
       resizable: null,
-      useCssTransforms: true,
-      useStyleCursor: true,
-      isDragging: false,
+      useCssTransforms: !0,
+      useStyleCursor: !0,
+      isDragging: !1,
       dragging: null,
-      isResizing: false,
+      isResizing: !1,
       resizing: null,
       lastX: NaN,
       lastY: NaN,
       lastW: NaN,
       lastH: NaN,
       style: {},
-      rtl: false,
-      dragEventSet: false,
-      resizeEventSet: false,
+      rtl: !1,
+      dragEventSet: !1,
+      resizeEventSet: !1,
       previousW: null,
       previousH: null,
       previousX: null,
@@ -448,91 +335,38 @@ const _sfc_main$1 = defineComponent({
   },
   emits: ["container-resized", "resize", "resized", "move", "moved"],
   created() {
-    let self = this;
-    self.updateWidthHandler = function(width) {
-      self.updateWidth(width);
-    };
-    self.compactHandler = function(layout) {
-      self.compact(layout);
-    };
-    self.setDraggableHandler = function(isDraggable) {
-      if (self.isDraggable === null) {
-        self.draggable = isDraggable;
-      }
-    };
-    self.setResizableHandler = function(isResizable) {
-      if (self.isResizable === null) {
-        self.resizable = isResizable;
-      }
-    };
-    self.setRowHeightHandler = function(rowHeight) {
-      self.rowHeight = rowHeight;
-    };
-    self.setMaxRowsHandler = function(maxRows) {
-      self.maxRows = maxRows;
-    };
-    self.directionchangeHandler = () => {
-      this.rtl = getDocumentDir() === "rtl";
-      this.compact();
-    };
-    self.setColNum = (colNum) => {
-      self.cols = parseInt(colNum);
-    };
-    this.eventBus.on("updateWidth", self.updateWidthHandler);
-    this.eventBus.on("compact", self.compactHandler);
-    this.eventBus.on("setDraggable", self.setDraggableHandler);
-    this.eventBus.on("setResizable", self.setResizableHandler);
-    this.eventBus.on("setRowHeight", self.setRowHeightHandler);
-    this.eventBus.on("setMaxRows", self.setMaxRowsHandler);
-    this.eventBus.on("directionchange", self.directionchangeHandler);
-    this.eventBus.on("setColNum", self.setColNum);
-    this.rtl = getDocumentDir() === "rtl";
+    let t = this;
+    t.updateWidthHandler = function(e) {
+      t.updateWidth(e);
+    }, t.compactHandler = function(e) {
+      t.compact(e);
+    }, t.setDraggableHandler = function(e) {
+      t.isDraggable === null && (t.draggable = e);
+    }, t.setResizableHandler = function(e) {
+      t.isResizable === null && (t.resizable = e);
+    }, t.setRowHeightHandler = function(e) {
+      t.rowHeight = e;
+    }, t.setMaxRowsHandler = function(e) {
+      t.maxRows = e;
+    }, t.directionchangeHandler = () => {
+      this.rtl = C() === "rtl", this.compact();
+    }, t.setColNum = (e) => {
+      t.cols = parseInt(e);
+    }, this.eventBus.on("updateWidth", t.updateWidthHandler), this.eventBus.on("compact", t.compactHandler), this.eventBus.on("setDraggable", t.setDraggableHandler), this.eventBus.on("setResizable", t.setResizableHandler), this.eventBus.on("setRowHeight", t.setRowHeightHandler), this.eventBus.on("setMaxRows", t.setMaxRowsHandler), this.eventBus.on("directionchange", t.directionchangeHandler), this.eventBus.on("setColNum", t.setColNum), this.rtl = C() === "rtl";
   },
   beforeUnmount() {
-    let self = this;
-    this.eventBus.off("updateWidth", self.updateWidthHandler);
-    this.eventBus.off("compact", self.compactHandler);
-    this.eventBus.off("setDraggable", self.setDraggableHandler);
-    this.eventBus.off("setResizable", self.setResizableHandler);
-    this.eventBus.off("setRowHeight", self.setRowHeightHandler);
-    this.eventBus.off("setMaxRows", self.setMaxRowsHandler);
-    this.eventBus.off("directionchange", self.directionchangeHandler);
-    this.eventBus.off("setColNum", self.setColNum);
-    if (this.interactObj) {
-      this.interactObj.unset();
-    }
+    let t = this;
+    this.eventBus.off("updateWidth", t.updateWidthHandler), this.eventBus.off("compact", t.compactHandler), this.eventBus.off("setDraggable", t.setDraggableHandler), this.eventBus.off("setResizable", t.setResizableHandler), this.eventBus.off("setRowHeight", t.setRowHeightHandler), this.eventBus.off("setMaxRows", t.setMaxRowsHandler), this.eventBus.off("directionchange", t.directionchangeHandler), this.eventBus.off("setColNum", t.setColNum), this.interactObj && this.interactObj.unset();
   },
   mounted() {
-    if (this.layout.responsive && this.layout.lastBreakpoint) {
-      this.cols = getColsFromBreakpoint(this.layout.lastBreakpoint, this.layout.cols);
-    } else {
-      this.cols = this.layout.colNum;
-    }
-    this.rowHeight = this.layout.rowHeight;
-    this.containerWidth = this.layout.width !== null ? this.layout.width : 100;
-    this.margin = this.layout.margin !== void 0 ? this.layout.margin : [10, 10];
-    this.maxRows = this.layout.maxRows;
-    if (this.isDraggable === null) {
-      this.draggable = this.layout.isDraggable;
-    } else {
-      this.draggable = this.isDraggable;
-    }
-    if (this.isResizable === null) {
-      this.resizable = this.layout.isResizable;
-    } else {
-      this.resizable = this.isResizable;
-    }
-    this.useCssTransforms = this.layout.useCssTransforms;
-    this.useStyleCursor = this.layout.useStyleCursor;
-    this.createStyle();
+    this.layout.responsive && this.layout.lastBreakpoint ? this.cols = z(this.layout.lastBreakpoint, this.layout.cols) : this.cols = this.layout.colNum, this.rowHeight = this.layout.rowHeight, this.containerWidth = this.layout.width !== null ? this.layout.width : 100, this.margin = this.layout.margin !== void 0 ? this.layout.margin : [10, 10], this.maxRows = this.layout.maxRows, this.isDraggable === null ? this.draggable = this.layout.isDraggable : this.draggable = this.isDraggable, this.isResizable === null ? this.resizable = this.layout.isResizable : this.resizable = this.isResizable, this.useCssTransforms = this.layout.useCssTransforms, this.useStyleCursor = this.layout.useStyleCursor, this.createStyle();
   },
   watch: {
     isDraggable() {
       this.draggable = this.isDraggable;
     },
     static() {
-      this.tryMakeDraggable();
-      this.tryMakeResizable();
+      this.tryMakeDraggable(), this.tryMakeResizable();
     },
     draggable() {
       this.tryMakeDraggable();
@@ -544,38 +378,28 @@ const _sfc_main$1 = defineComponent({
       this.tryMakeResizable();
     },
     rowHeight() {
-      this.createStyle();
-      this.emitContainerResized();
+      this.createStyle(), this.emitContainerResized();
     },
     cols() {
-      this.tryMakeResizable();
-      this.createStyle();
-      this.emitContainerResized();
+      this.tryMakeResizable(), this.createStyle(), this.emitContainerResized();
     },
     containerWidth() {
-      this.tryMakeResizable();
-      this.createStyle();
-      this.emitContainerResized();
+      this.tryMakeResizable(), this.createStyle(), this.emitContainerResized();
     },
-    x(newVal) {
-      this.innerX = newVal;
-      this.createStyle();
+    x(t) {
+      this.innerX = t, this.createStyle();
     },
-    y(newVal) {
-      this.innerY = newVal;
-      this.createStyle();
+    y(t) {
+      this.innerY = t, this.createStyle();
     },
-    h(newVal) {
-      this.innerH = newVal;
-      this.createStyle();
+    h(t) {
+      this.innerH = t, this.createStyle();
     },
-    w(newVal) {
-      this.innerW = newVal;
-      this.createStyle();
+    w(t) {
+      this.innerW = t, this.createStyle();
     },
     renderRtl() {
-      this.tryMakeResizable();
-      this.createStyle();
+      this.tryMakeResizable(), this.createStyle();
     },
     minH() {
       this.tryMakeResizable();
@@ -589,23 +413,18 @@ const _sfc_main$1 = defineComponent({
     maxW() {
       this.tryMakeResizable();
     },
-    "$parent.margin"(margin) {
-      if (!margin || margin[0] == this.margin[0] && margin[1] == this.margin[1]) {
-        return;
-      }
-      this.margin = margin.map((m) => Number(m));
-      this.createStyle();
-      this.emitContainerResized();
+    "$parent.margin"(t) {
+      !t || t[0] == this.margin[0] && t[1] == this.margin[1] || (this.margin = t.map((e) => Number(e)), this.createStyle(), this.emitContainerResized());
     }
   },
   computed: {
     classObj() {
       return {
         "vue-resizable": this.resizableAndNotStatic,
-        "static": this.static,
-        "resizing": this.isResizing,
+        static: this.static,
+        resizing: this.isResizing,
         "vue-draggable-dragging": this.isDragging,
-        "cssTransforms": this.useCssTransforms,
+        cssTransforms: this.useCssTransforms,
         "render-rtl": this.renderRtl,
         "disable-userselect": this.isDragging,
         "no-touch": this.isAndroid && this.draggableOrResizableAndNotStatic
@@ -624,380 +443,217 @@ const _sfc_main$1 = defineComponent({
       return this.layout.isMirrored ? !this.rtl : this.rtl;
     },
     resizableHandleClass() {
-      if (this.renderRtl) {
-        return "vue-resizable-handle vue-rtl-resizable-handle";
-      } else {
-        return "vue-resizable-handle";
-      }
+      return this.renderRtl ? "vue-resizable-handle vue-rtl-resizable-handle" : "vue-resizable-handle";
     }
   },
   methods: {
     createStyle() {
-      if (this.x + this.w > this.cols) {
-        this.innerX = 0;
-        this.innerW = this.w > this.cols ? this.cols : this.w;
-      } else {
-        this.innerX = this.x;
-        this.innerW = this.w;
-      }
-      let pos = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH);
-      if (this.isDragging) {
-        pos.top = this.dragging.top;
-        if (this.renderRtl) {
-          pos.right = this.dragging.left;
-        } else {
-          pos.left = this.dragging.left;
-        }
-      }
-      if (this.isResizing) {
-        pos.width = this.resizing.width;
-        pos.height = this.resizing.height;
-      }
-      let style;
-      if (this.useCssTransforms) {
-        if (this.renderRtl) {
-          style = setTransformRtl(pos.top, pos.right, pos.width, pos.height);
-        } else {
-          style = setTransform(pos.top, pos.left, pos.width, pos.height);
-        }
-      } else {
-        if (this.renderRtl) {
-          style = setTopRight(pos.top, pos.right, pos.width, pos.height);
-        } else {
-          style = setTopLeft(pos.top, pos.left, pos.width, pos.height);
-        }
-      }
-      this.style = style;
+      this.x + this.w > this.cols ? (this.innerX = 0, this.innerW = this.w > this.cols ? this.cols : this.w) : (this.innerX = this.x, this.innerW = this.w);
+      let t = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH);
+      this.isDragging && (t.top = this.dragging.top, this.renderRtl ? t.right = this.dragging.left : t.left = this.dragging.left), this.isResizing && (t.width = this.resizing.width, t.height = this.resizing.height);
+      let e;
+      this.useCssTransforms ? this.renderRtl ? e = J(t.top, t.right, t.width, t.height) : e = U(t.top, t.left, t.width, t.height) : this.renderRtl ? e = Q(t.top, t.right, t.width, t.height) : e = K(t.top, t.left, t.width, t.height), this.style = e;
     },
     emitContainerResized() {
-      let styleProps = {};
-      for (let prop of ["width", "height"]) {
-        let val = this.style[prop];
-        let matches = val.match(/^(\d+)px$/);
-        if (!matches)
+      let t = {};
+      for (let e of ["width", "height"]) {
+        let s = this.style[e].match(/^(\d+)px$/);
+        if (!s)
           return;
-        styleProps[prop] = matches[1];
+        t[e] = s[1];
       }
-      this.$emit("container-resized", this.i, this.h, this.w, styleProps.height, styleProps.width);
+      this.$emit("container-resized", this.i, this.h, this.w, t.height, t.width);
     },
-    handleResize(event) {
+    handleResize(t) {
       if (this.static)
         return;
-      const position = getControlPosition(event);
-      if (position == null)
+      const e = B(t);
+      if (e == null)
         return;
-      const { x, y } = position;
-      const newSize = { width: 0, height: 0 };
-      let pos;
-      switch (event.type) {
+      const { x: i, y: s } = e, r = { width: 0, height: 0 };
+      let n;
+      switch (t.type) {
         case "resizestart": {
-          this.previousW = this.innerW;
-          this.previousH = this.innerH;
-          pos = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH);
-          newSize.width = pos.width;
-          newSize.height = pos.height;
-          this.resizing = newSize;
-          this.isResizing = true;
+          this.previousW = this.innerW, this.previousH = this.innerH, n = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH), r.width = n.width, r.height = n.height, this.resizing = r, this.isResizing = !0;
           break;
         }
         case "resizemove": {
-          const coreEvent = createCoreData(this.lastW, this.lastH, x, y);
-          if (this.renderRtl) {
-            newSize.width = this.resizing.width - coreEvent.deltaX;
-          } else {
-            newSize.width = this.resizing.width + coreEvent.deltaX;
-          }
-          newSize.height = this.resizing.height + coreEvent.deltaY;
-          this.resizing = newSize;
+          const a = W(this.lastW, this.lastH, i, s);
+          this.renderRtl ? r.width = this.resizing.width - a.deltaX : r.width = this.resizing.width + a.deltaX, r.height = this.resizing.height + a.deltaY, this.resizing = r;
           break;
         }
         case "resizeend": {
-          pos = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH);
-          newSize.width = pos.width;
-          newSize.height = pos.height;
-          this.resizing = null;
-          this.isResizing = false;
+          n = this.calcPosition(this.innerX, this.innerY, this.innerW, this.innerH), r.width = n.width, r.height = n.height, this.resizing = null, this.isResizing = !1;
           break;
         }
       }
-      pos = this.calcWH(newSize.height, newSize.width);
-      if (pos.w < this.minW) {
-        pos.w = this.minW;
-      }
-      if (pos.w > this.maxW) {
-        pos.w = this.maxW;
-      }
-      if (pos.h < this.minH) {
-        pos.h = this.minH;
-      }
-      if (pos.h > this.maxH) {
-        pos.h = this.maxH;
-      }
-      if (pos.h < 1) {
-        pos.h = 1;
-      }
-      if (pos.w < 1) {
-        pos.w = 1;
-      }
-      this.lastW = x;
-      this.lastH = y;
-      if (this.innerW !== pos.w || this.innerH !== pos.h) {
-        this.$emit("resize", this.i, pos.h, pos.w, newSize.height, newSize.width);
-      }
-      if (event.type === "resizeend" && (this.previousW !== this.innerW || this.previousH !== this.innerH)) {
-        this.$emit("resized", this.i, pos.h, pos.w, newSize.height, newSize.width);
-      }
-      this.eventBus.emit("resizeEvent", { eventType: event.type, i: this.i, x: this.innerX, y: this.innerY, h: pos.h, w: pos.w });
+      n = this.calcWH(r.height, r.width), n.w < this.minW && (n.w = this.minW), n.w > this.maxW && (n.w = this.maxW), n.h < this.minH && (n.h = this.minH), n.h > this.maxH && (n.h = this.maxH), n.h < 1 && (n.h = 1), n.w < 1 && (n.w = 1), this.lastW = i, this.lastH = s, (this.innerW !== n.w || this.innerH !== n.h) && this.$emit("resize", this.i, n.h, n.w, r.height, r.width), t.type === "resizeend" && (this.previousW !== this.innerW || this.previousH !== this.innerH) && this.$emit("resized", this.i, n.h, n.w, r.height, r.width), this.eventBus.emit("resizeEvent", { eventType: t.type, i: this.i, x: this.innerX, y: this.innerY, h: n.h, w: n.w });
     },
-    handleDrag(event) {
-      if (this.static)
+    handleDrag(t) {
+      if (this.static || this.isResizing)
         return;
-      if (this.isResizing)
+      const e = B(t);
+      if (e === null)
         return;
-      const position = getControlPosition(event);
-      if (position === null)
-        return;
-      const { x, y } = position;
-      let newPosition = { top: 0, left: 0 };
-      switch (event.type) {
+      const { x: i, y: s } = e;
+      let r = { top: 0, left: 0 };
+      switch (t.type) {
         case "dragstart": {
-          this.previousX = this.innerX;
-          this.previousY = this.innerY;
-          let parentRect = event.target.offsetParent.getBoundingClientRect();
-          let clientRect = event.target.getBoundingClientRect();
-          if (this.renderRtl) {
-            newPosition.left = (clientRect.right - parentRect.right) * -1;
-          } else {
-            newPosition.left = clientRect.left - parentRect.left;
-          }
-          newPosition.top = clientRect.top - parentRect.top;
-          this.dragging = newPosition;
-          this.isDragging = true;
+          this.previousX = this.innerX, this.previousY = this.innerY;
+          let a = t.target.offsetParent.getBoundingClientRect(), h = t.target.getBoundingClientRect();
+          this.renderRtl ? r.left = (h.right - a.right) * -1 : r.left = h.left - a.left, r.top = h.top - a.top, this.dragging = r, this.isDragging = !0;
           break;
         }
         case "dragend": {
           if (!this.isDragging)
             return;
-          let parentRect = event.target.offsetParent.getBoundingClientRect();
-          let clientRect = event.target.getBoundingClientRect();
-          if (this.renderRtl) {
-            newPosition.left = (clientRect.right - parentRect.right) * -1;
-          } else {
-            newPosition.left = clientRect.left - parentRect.left;
-          }
-          newPosition.top = clientRect.top - parentRect.top;
-          this.dragging = null;
-          this.isDragging = false;
+          let a = t.target.offsetParent.getBoundingClientRect(), h = t.target.getBoundingClientRect();
+          this.renderRtl ? r.left = (h.right - a.right) * -1 : r.left = h.left - a.left, r.top = h.top - a.top, this.dragging = null, this.isDragging = !1;
           break;
         }
         case "dragmove": {
-          const coreEvent = createCoreData(this.lastX, this.lastY, x, y);
-          if (this.renderRtl) {
-            newPosition.left = this.dragging.left - coreEvent.deltaX;
-          } else {
-            newPosition.left = this.dragging.left + coreEvent.deltaX;
-          }
-          newPosition.top = this.dragging.top + coreEvent.deltaY;
-          this.dragging = newPosition;
+          const a = W(this.lastX, this.lastY, i, s);
+          this.renderRtl ? r.left = this.dragging.left - a.deltaX : r.left = this.dragging.left + a.deltaX, r.top = this.dragging.top + a.deltaY, this.dragging = r;
           break;
         }
       }
-      let pos;
-      if (this.renderRtl) {
-        pos = this.calcXY(newPosition.top, newPosition.left);
-      } else {
-        pos = this.calcXY(newPosition.top, newPosition.left);
-      }
-      this.lastX = x;
-      this.lastY = y;
-      if (this.innerX !== pos.x || this.innerY !== pos.y) {
-        this.$emit("move", this.i, pos.x, pos.y);
-      }
-      if (event.type === "dragend" && (this.previousX !== this.innerX || this.previousY !== this.innerY)) {
-        this.$emit("moved", this.i, pos.x, pos.y);
-      }
-      this.eventBus.emit("dragEvent", { eventType: event.type, i: this.i, x: pos.x, y: pos.y, h: this.innerH, w: this.innerW });
+      let n;
+      this.renderRtl ? n = this.calcXY(r.top, r.left) : n = this.calcXY(r.top, r.left), this.lastX = i, this.lastY = s, (this.innerX !== n.x || this.innerY !== n.y) && this.$emit("move", this.i, n.x, n.y), t.type === "dragend" && (this.previousX !== this.innerX || this.previousY !== this.innerY) && this.$emit("moved", this.i, n.x, n.y), this.eventBus.emit("dragEvent", { eventType: t.type, i: this.i, x: n.x, y: n.y, h: this.innerH, w: this.innerW });
     },
-    calcPosition(x, y, w, h) {
-      const colWidth = this.calcColWidth();
-      let out;
-      if (this.renderRtl) {
-        out = {
-          right: Math.round(colWidth * x + (x + 1) * this.margin[0]),
-          top: Math.round(this.rowHeight * y + (y + 1) * this.margin[1]),
-          width: w === Infinity ? w : Math.round(colWidth * w + Math.max(0, w - 1) * this.margin[0]),
-          height: h === Infinity ? h : Math.round(this.rowHeight * h + Math.max(0, h - 1) * this.margin[1])
-        };
-      } else {
-        out = {
-          left: Math.round(colWidth * x + (x + 1) * this.margin[0]),
-          top: Math.round(this.rowHeight * y + (y + 1) * this.margin[1]),
-          width: w === Infinity ? w : Math.round(colWidth * w + Math.max(0, w - 1) * this.margin[0]),
-          height: h === Infinity ? h : Math.round(this.rowHeight * h + Math.max(0, h - 1) * this.margin[1])
-        };
-      }
-      return out;
+    calcPosition(t, e, i, s) {
+      const r = this.calcColWidth();
+      let n;
+      return this.renderRtl ? n = {
+        right: Math.round(r * t + (t + 1) * this.margin[0]),
+        top: Math.round(this.rowHeight * e + (e + 1) * this.margin[1]),
+        // 0 * Infinity === NaN, which causes problems with resize constriants;
+        // Fix this if it occurs.
+        // Note we do it here rather than later because Math.round(Infinity) causes deopt
+        width: i === 1 / 0 ? i : Math.round(r * i + Math.max(0, i - 1) * this.margin[0]),
+        height: s === 1 / 0 ? s : Math.round(this.rowHeight * s + Math.max(0, s - 1) * this.margin[1])
+      } : n = {
+        left: Math.round(r * t + (t + 1) * this.margin[0]),
+        top: Math.round(this.rowHeight * e + (e + 1) * this.margin[1]),
+        // 0 * Infinity === NaN, which causes problems with resize constriants;
+        // Fix this if it occurs.
+        // Note we do it here rather than later because Math.round(Infinity) causes deopt
+        width: i === 1 / 0 ? i : Math.round(r * i + Math.max(0, i - 1) * this.margin[0]),
+        height: s === 1 / 0 ? s : Math.round(this.rowHeight * s + Math.max(0, s - 1) * this.margin[1])
+      }, n;
     },
-    calcXY(top, left) {
-      const colWidth = this.calcColWidth();
-      let x = Math.round((left - this.margin[0]) / (colWidth + this.margin[0]));
-      let y = Math.round((top - this.margin[1]) / (this.rowHeight + this.margin[1]));
-      x = Math.max(Math.min(x, this.cols - this.innerW), 0);
-      y = Math.max(Math.min(y, this.maxRows - this.innerH), 0);
-      return { x, y };
+    /**
+     * Translate x and y coordinates from pixels to grid units.
+     * @param  top  Top position (relative to parent) in pixels.
+     * @param  left Left position (relative to parent) in pixels.
+     * @return x and y in grid units.
+     */
+    // TODO check if this function needs change in order to support rtl.
+    calcXY(t, e) {
+      const i = this.calcColWidth();
+      let s = Math.round((e - this.margin[0]) / (i + this.margin[0])), r = Math.round((t - this.margin[1]) / (this.rowHeight + this.margin[1]));
+      return s = Math.max(Math.min(s, this.cols - this.innerW), 0), r = Math.max(Math.min(r, this.maxRows - this.innerH), 0), { x: s, y: r };
     },
+    // Helper for generating column width
     calcColWidth() {
-      const colWidth = (this.containerWidth - this.margin[0] * (this.cols + 1)) / this.cols;
-      return colWidth;
+      return (this.containerWidth - this.margin[0] * (this.cols + 1)) / this.cols;
     },
-    calcWH(height, width, autoSizeFlag = false) {
-      const colWidth = this.calcColWidth();
-      let w = Math.round((width + this.margin[0]) / (colWidth + this.margin[0]));
-      let h = 0;
-      if (!autoSizeFlag) {
-        h = Math.round((height + this.margin[1]) / (this.rowHeight + this.margin[1]));
-      } else {
-        h = Math.ceil((height + this.margin[1]) / (this.rowHeight + this.margin[1]));
-      }
-      w = Math.max(Math.min(w, this.cols - this.innerX), 0);
-      h = Math.max(Math.min(h, this.maxRows - this.innerY), 0);
-      return { w, h };
+    /**
+     * Given a height and width in pixel values, calculate grid units.
+     * @param  height Height in pixels.
+     * @param  width  Width in pixels.
+     * @param  autoSizeFlag  function autoSize identifier.
+     * @return w, h as grid units.
+     */
+    calcWH(t, e, i = !1) {
+      const s = this.calcColWidth();
+      let r = Math.round((e + this.margin[0]) / (s + this.margin[0])), n = 0;
+      return i ? n = Math.ceil((t + this.margin[1]) / (this.rowHeight + this.margin[1])) : n = Math.round((t + this.margin[1]) / (this.rowHeight + this.margin[1])), r = Math.max(Math.min(r, this.cols - this.innerX), 0), n = Math.max(Math.min(n, this.maxRows - this.innerY), 0), { w: r, h: n };
     },
-    updateWidth(width, colNum) {
-      this.containerWidth = width;
-      if (colNum !== void 0 && colNum !== null) {
-        this.cols = colNum;
-      }
+    updateWidth(t, e) {
+      this.containerWidth = t, e != null && (this.cols = e);
     },
     compact() {
       this.createStyle();
     },
     tryMakeDraggable() {
-      const self = this;
-      if (this.interactObj === null || this.interactObj === void 0) {
-        this.interactObj = interact(this.$el);
-        if (!this.useStyleCursor) {
-          this.interactObj.styleCursor(false);
-        }
-      }
-      if (this.draggable && !this.static) {
-        const opts = {
+      const t = this;
+      if ((this.interactObj === null || this.interactObj === void 0) && (this.interactObj = p(this.$el), this.useStyleCursor || this.interactObj.styleCursor(!1)), this.draggable && !this.static) {
+        const e = {
           ignoreFrom: this.dragIgnoreFrom,
           allowFrom: this.dragAllowFrom
         };
-        this.interactObj.draggable(opts);
-        if (!this.dragEventSet) {
-          this.dragEventSet = true;
-          this.interactObj.on("dragstart dragmove dragend", function(event) {
-            self.handleDrag(event);
-          });
-        }
-      } else {
+        this.interactObj.draggable(e), this.dragEventSet || (this.dragEventSet = !0, this.interactObj.on("dragstart dragmove dragend", function(i) {
+          t.handleDrag(i);
+        }));
+      } else
         this.interactObj.draggable({
-          enabled: false
+          enabled: !1
         });
-      }
     },
     tryMakeResizable() {
-      const self = this;
-      if (this.interactObj === null || this.interactObj === void 0) {
-        this.interactObj = interact(this.$el);
-        if (!this.useStyleCursor) {
-          this.interactObj.styleCursor(false);
-        }
-      }
-      if (this.resizable && !this.static) {
-        let maximum = this.calcPosition(0, 0, this.maxW, this.maxH);
-        let minimum = this.calcPosition(0, 0, this.minW, this.minH);
-        const opts = {
+      const t = this;
+      if ((this.interactObj === null || this.interactObj === void 0) && (this.interactObj = p(this.$el), this.useStyleCursor || this.interactObj.styleCursor(!1)), this.resizable && !this.static) {
+        let e = this.calcPosition(0, 0, this.maxW, this.maxH), i = this.calcPosition(0, 0, this.minW, this.minH);
+        const s = {
+          // allowFrom: "." + this.resizableHandleClass.trim().replace(" ", "."),
           edges: {
-            left: false,
+            left: !1,
             right: "." + this.resizableHandleClass.trim().replace(" ", "."),
             bottom: "." + this.resizableHandleClass.trim().replace(" ", "."),
-            top: false
+            top: !1
           },
           ignoreFrom: this.resizeIgnoreFrom,
           restrictSize: {
             min: {
-              height: minimum.height,
-              width: minimum.width
+              height: i.height,
+              width: i.width
             },
             max: {
-              height: maximum.height,
-              width: maximum.width
+              height: e.height,
+              width: e.width
             }
           },
           modifiers: []
         };
-        if (this.preserveAspectRatio) {
-          opts.modifiers = [
-            interact.modifiers.aspectRatio({
-              ratio: "preserve"
-            })
-          ];
-        }
-        this.interactObj.resizable(opts);
-        if (!this.resizeEventSet) {
-          this.resizeEventSet = true;
-          this.interactObj.on("resizestart resizemove resizeend", function(event) {
-            self.handleResize(event);
-          });
-        }
-      } else {
+        this.preserveAspectRatio && (s.modifiers = [
+          p.modifiers.aspectRatio({
+            ratio: "preserve"
+          })
+        ]), this.interactObj.resizable(s), this.resizeEventSet || (this.resizeEventSet = !0, this.interactObj.on("resizestart resizemove resizeend", function(r) {
+          t.handleResize(r);
+        }));
+      } else
         this.interactObj.resizable({
-          enabled: false
+          enabled: !1
         });
-      }
     },
     autoSize() {
-      this.previousW = this.innerW;
-      this.previousH = this.innerH;
-      let newSize = this.$el.firstElementChild.getBoundingClientRect();
-      let pos = this.calcWH(newSize.height, newSize.width, true);
-      if (pos.w < this.minW) {
-        pos.w = this.minW;
-      }
-      if (pos.w > this.maxW) {
-        pos.w = this.maxW;
-      }
-      if (pos.h < this.minH) {
-        pos.h = this.minH;
-      }
-      if (pos.h > this.maxH) {
-        pos.h = this.maxH;
-      }
-      if (pos.h < 1) {
-        pos.h = 1;
-      }
-      if (pos.w < 1) {
-        pos.w = 1;
-      }
-      if (this.innerW !== pos.w || this.innerH !== pos.h) {
-        this.$emit("resize", this.i, pos.h, pos.w, newSize.height, newSize.width);
-      }
-      if (this.previousW !== pos.w || this.previousH !== pos.h) {
-        this.$emit("resized", this.i, pos.h, pos.w, newSize.height, newSize.width);
-        this.eventBus.emit("resizeEvent", { eventType: "resizeend", i: this.i, x: this.innerX, y: this.innerY, h: pos.h, w: pos.w });
-      }
+      this.previousW = this.innerW, this.previousH = this.innerH;
+      let t = this.$el.firstElementChild.getBoundingClientRect(), e = this.calcWH(t.height, t.width, !0);
+      e.w < this.minW && (e.w = this.minW), e.w > this.maxW && (e.w = this.maxW), e.h < this.minH && (e.h = this.minH), e.h > this.maxH && (e.h = this.maxH), e.h < 1 && (e.h = 1), e.w < 1 && (e.w = 1), (this.innerW !== e.w || this.innerH !== e.h) && this.$emit("resize", this.i, e.h, e.w, t.height, t.width), (this.previousW !== e.w || this.previousH !== e.h) && (this.$emit("resized", this.i, e.h, e.w, t.height, t.width), this.eventBus.emit("resizeEvent", { eventType: "resizeend", i: this.i, x: this.innerX, y: this.innerY, h: e.h, w: e.w }));
     }
   }
 });
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("div", {
-    class: normalizeClass(["vue-grid-item", _ctx.classObj]),
-    style: normalizeStyle(_ctx.style)
+const O = (t, e) => {
+  const i = t.__vccOpts || t;
+  for (const [s, r] of e)
+    i[s] = r;
+  return i;
+};
+function at(t, e, i, s, r, n) {
+  return y(), b("div", {
+    class: x(["vue-grid-item", t.classObj]),
+    style: S(t.style)
   }, [
-    renderSlot(_ctx.$slots, "default", {}, void 0, true),
-    _ctx.resizableAndNotStatic ? (openBlock(), createElementBlock("span", {
+    $(t.$slots, "default", {}, void 0, !0),
+    t.resizableAndNotStatic ? (y(), b("span", {
       key: 0,
       ref: "handle",
-      class: normalizeClass(_ctx.resizableHandleClass)
-    }, null, 2)) : createCommentVNode("", true)
+      class: x(t.resizableHandleClass)
+    }, null, 2)) : Y("", !0)
   ], 6);
 }
-var GridItem = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-5f50ad7e"]]);
-var GridLayout_vue_vue_type_style_index_0_scoped_true_lang = /* @__PURE__ */ (() => ".vue-grid-layout[data-v-7d3b3fd8]{position:relative;transition:height .2s ease}\n")();
-const _sfc_main = defineComponent({
+const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"]]), ht = k({
   name: "GridLayout",
   provide() {
     return {
@@ -1006,12 +662,13 @@ const _sfc_main = defineComponent({
     };
   },
   components: {
-    GridItem
+    GridItem: X
   },
   props: {
+    // If true, the container height swells and contracts to fit contents
     autoSize: {
       type: Boolean,
-      default: true
+      default: !0
     },
     colNum: {
       type: Number,
@@ -1023,7 +680,7 @@ const _sfc_main = defineComponent({
     },
     maxRows: {
       type: Number,
-      default: Infinity
+      default: 1 / 0
     },
     margin: {
       type: Array,
@@ -1033,31 +690,31 @@ const _sfc_main = defineComponent({
     },
     isDraggable: {
       type: Boolean,
-      default: true
+      default: !0
     },
     isResizable: {
       type: Boolean,
-      default: true
+      default: !0
     },
     isMirrored: {
       type: Boolean,
-      default: false
+      default: !1
     },
     useCssTransforms: {
       type: Boolean,
-      default: true
+      default: !0
     },
     verticalCompact: {
       type: Boolean,
-      default: true
+      default: !0
     },
     layout: {
       type: Array,
-      required: true
+      required: !0
     },
     responsive: {
       type: Boolean,
-      default: false
+      default: !1
     },
     responsiveLayouts: {
       type: Object,
@@ -1079,20 +736,20 @@ const _sfc_main = defineComponent({
     },
     preventCollision: {
       type: Boolean,
-      default: false
+      default: !1
     },
     useStyleCursor: {
       type: Boolean,
-      default: true
+      default: !0
     }
   },
   data() {
     return {
-      eventBus: mitt(),
+      eventBus: q(),
       width: null,
       mergedStyle: {},
       lastLayoutLength: 0,
-      isDragging: false,
+      isDragging: !1,
       placeholder: {
         x: 0,
         y: 0,
@@ -1101,64 +758,48 @@ const _sfc_main = defineComponent({
         i: -1
       },
       layouts: {},
+      // array to store all layouts from different breakpoints
       lastBreakpoint: null,
+      // store last active breakpoint
       originalLayout: null
+      // store original Layout
+      // layout: JSON.parse(JSON.stringify(this.value)),
     };
   },
   emits: ["update:layout", "layout-created", "layout-before-mount", "layout-mounted", "layout-updated", "layout-ready", "breakpoint-changed"],
   created() {
-    const self = this;
-    self.resizeEventHandler = function({ eventType, i, x, y, h, w }) {
-      self.resizeEvent(eventType, i, x, y, h, w);
-    };
-    self.dragEventHandler = function({ eventType, i, x, y, h, w }) {
-      self.dragEvent(eventType, i, x, y, h, w);
-    };
-    self.eventBus.on("resizeEvent", self.resizeEventHandler);
-    self.eventBus.on("dragEvent", self.dragEventHandler);
-    self.$emit("layout-created", self.layout);
+    const t = this;
+    t.resizeEventHandler = function({ eventType: e, i, x: s, y: r, h: n, w: a }) {
+      t.resizeEvent(e, i, s, r, n, a);
+    }, t.dragEventHandler = function({ eventType: e, i, x: s, y: r, h: n, w: a }) {
+      t.dragEvent(e, i, s, r, n, a);
+    }, t.eventBus.on("resizeEvent", t.resizeEventHandler), t.eventBus.on("dragEvent", t.dragEventHandler), t.$emit("layout-created", t.layout);
   },
   beforeUnmount() {
-    this.eventBus.off("resizeEvent", this.resizeEventHandler);
-    this.eventBus.off("dragEvent", this.dragEventHandler);
-    if (this.ro)
-      this.ro.unobserve(this.$el);
+    this.eventBus.off("resizeEvent", this.resizeEventHandler), this.eventBus.off("dragEvent", this.dragEventHandler), this.ro && this.ro.unobserve(this.$el);
   },
   beforeMount() {
     this.$emit("layout-before-mount", this.layout);
   },
   mounted() {
-    const self = this;
-    this.$emit("layout-mounted", this.layout);
-    this.$nextTick(function() {
-      validateLayout(this.layout);
-      this.originalLayout = this.layout;
-      this.$nextTick(function() {
-        self.onWindowResize();
-        self.initResponsiveFeatures();
-        compact(self.layout, self.verticalCompact);
-        self.$emit("layout-updated", self.layout);
-        self.updateHeight();
-        self.$nextTick(function() {
-          self.ro = new ResizeObserver(() => {
-            self.onWindowResize();
-          });
-          self.ro.observe(this.$el);
+    const t = this;
+    this.$emit("layout-mounted", this.layout), this.$nextTick(function() {
+      Z(this.layout), this.originalLayout = this.layout, this.$nextTick(function() {
+        t.onWindowResize(), t.initResponsiveFeatures(), f(t.layout, t.verticalCompact), t.$emit("layout-updated", t.layout), t.updateHeight(), t.$nextTick(function() {
+          t.ro = new F(() => {
+            t.onWindowResize();
+          }), t.ro.observe(this.$el);
         });
       });
     });
   },
   watch: {
-    width(newval, oldval) {
-      const self = this;
+    width(t, e) {
+      const i = this;
       this.$nextTick(function() {
-        this.eventBus.emit("updateWidth", this.width);
-        if (oldval === null) {
-          this.$nextTick(() => {
-            this.$emit("layout-ready", self.layout);
-          });
-        }
-        this.updateHeight();
+        this.eventBus.emit("updateWidth", this.width), e === null && this.$nextTick(() => {
+          this.$emit("layout-ready", i.layout);
+        }), this.updateHeight();
       });
     },
     layout() {
@@ -1167,8 +808,8 @@ const _sfc_main = defineComponent({
     "layout.length"() {
       this.layoutUpdate();
     },
-    colNum(val) {
-      this.eventBus.emit("setColNum", val);
+    colNum(t) {
+      this.eventBus.emit("setColNum", t);
     },
     rowHeight() {
       this.eventBus.emit("setRowHeight", this.rowHeight);
@@ -1180,11 +821,7 @@ const _sfc_main = defineComponent({
       this.eventBus.emit("setResizable", this.isResizable);
     },
     responsive() {
-      if (!this.responsive) {
-        this.$emit("update:layout", this.originalLayout);
-        this.eventBus.emit("setColNum", this.colNum);
-      }
-      this.onWindowResize();
+      this.responsive || (this.$emit("update:layout", this.originalLayout), this.eventBus.emit("setColNum", this.colNum)), this.onWindowResize();
     },
     maxRows() {
       this.eventBus.emit("setMaxRows", this.maxRows);
@@ -1197,25 +834,10 @@ const _sfc_main = defineComponent({
     layoutUpdate() {
       if (this.layout !== void 0 && this.originalLayout !== null) {
         if (this.layout.length !== this.originalLayout.length) {
-          let diff = this.findDifference(this.layout, this.originalLayout);
-          if (diff.length > 0) {
-            if (this.layout.length > this.originalLayout.length) {
-              this.originalLayout = this.originalLayout.concat(diff);
-            } else {
-              this.originalLayout = this.originalLayout.filter((obj) => {
-                return !diff.some((obj2) => {
-                  return obj.i === obj2.i;
-                });
-              });
-            }
-          }
-          this.lastLayoutLength = this.layout.length;
-          this.initResponsiveFeatures();
+          let t = this.findDifference(this.layout, this.originalLayout);
+          t.length > 0 && (this.layout.length > this.originalLayout.length ? this.originalLayout = this.originalLayout.concat(t) : this.originalLayout = this.originalLayout.filter((e) => !t.some((i) => e.i === i.i))), this.lastLayoutLength = this.layout.length, this.initResponsiveFeatures();
         }
-        compact(this.layout, this.verticalCompact);
-        this.eventBus.emit("updateWidth", this.width);
-        this.updateHeight();
-        this.$emit("layout-updated", this.layout);
+        f(this.layout, this.verticalCompact), this.eventBus.emit("updateWidth", this.width), this.updateHeight(), this.$emit("layout-updated", this.layout);
       }
     },
     updateHeight() {
@@ -1224,142 +846,96 @@ const _sfc_main = defineComponent({
       };
     },
     onWindowResize() {
-      if (this.$el) {
-        this.width = this.$el.offsetWidth;
-      }
-      this.eventBus.emit("resizeEvent", {});
+      this.$el && (this.width = this.$el.offsetWidth), this.eventBus.emit("resizeEvent", {});
     },
     containerHeight() {
-      if (!this.autoSize)
-        return;
-      const containerHeight = bottom(this.layout) * (this.rowHeight + this.margin[1]) + this.margin[1] + "px";
-      return containerHeight;
+      return this.autoSize ? T(this.layout) * (this.rowHeight + this.margin[1]) + this.margin[1] + "px" : void 0;
     },
-    dragEvent(eventName, id, x, y, h, w) {
-      let l = getLayoutItem(this.layout, id);
-      if (eventName === "dragmove" || eventName === "dragstart") {
-        this.placeholder.i = id;
-        this.placeholder.x = l.x;
-        this.placeholder.y = l.y;
-        this.placeholder.w = w;
-        this.placeholder.h = h;
-        this.$nextTick(function() {
-          this.isDragging = true;
-        });
-        this.eventBus.emit("updateWidth", this.width);
-      } else {
-        this.$nextTick(function() {
-          this.isDragging = false;
-        });
-      }
-      this.$emit("update:layout", moveElement(this.layout, l, x, y, true, this.preventCollision));
-      compact(this.layout, this.verticalCompact);
-      this.eventBus.emit("compact");
-      this.updateHeight();
-      if (eventName === "dragend")
-        this.$emit("layout-updated", this.layout);
+    dragEvent(t, e, i, s, r, n) {
+      let a = R(this.layout, e);
+      t === "dragmove" || t === "dragstart" ? (this.placeholder.i = e, this.placeholder.x = a.x, this.placeholder.y = a.y, this.placeholder.w = n, this.placeholder.h = r, this.$nextTick(function() {
+        this.isDragging = !0;
+      }), this.eventBus.emit("updateWidth", this.width)) : this.$nextTick(function() {
+        this.isDragging = !1;
+      }), this.$emit("update:layout", v(this.layout, a, i, s, !0, this.preventCollision)), f(this.layout, this.verticalCompact), this.eventBus.emit("compact"), this.updateHeight(), t === "dragend" && this.$emit("layout-updated", this.layout);
     },
-    resizeEvent(eventName, id, x, y, h, w) {
-      let l = getLayoutItem(this.layout, id);
-      let hasCollisions;
+    resizeEvent(t, e, i, s, r, n) {
+      let a = R(this.layout, e), h;
       if (this.preventCollision) {
-        const collisions = getAllCollisions(this.layout, __spreadProps(__spreadValues({}, l), { w, h })).filter((layoutItem) => layoutItem.i !== l.i);
-        hasCollisions = collisions.length > 0;
-        if (hasCollisions) {
-          let leastX = Infinity, leastY = Infinity;
-          collisions.forEach((layoutItem) => {
-            if (layoutItem.x > l.x)
-              leastX = Math.min(leastX, layoutItem.x);
-            if (layoutItem.y > l.y)
-              leastY = Math.min(leastY, layoutItem.y);
-          });
-          if (Number.isFinite(leastX))
-            l.w = leastX - l.x;
-          if (Number.isFinite(leastY))
-            l.h = leastY - l.y;
+        const d = D(this.layout, { ...a, w: n, h: r }).filter(
+          (o) => o.i !== a.i
+        );
+        if (h = d.length > 0, h) {
+          let o = 1 / 0, l = 1 / 0;
+          d.forEach((u) => {
+            u.x > a.x && (o = Math.min(o, u.x)), u.y > a.y && (l = Math.min(l, u.y));
+          }), Number.isFinite(o) && (a.w = o - a.x), Number.isFinite(l) && (a.h = l - a.y);
         }
       }
-      if (!hasCollisions) {
-        l.w = w;
-        l.h = h;
-      }
-      if (eventName === "resizestart" || eventName === "resizemove") {
-        this.placeholder.i = id;
-        this.placeholder.x = x;
-        this.placeholder.y = y;
-        this.placeholder.w = l.w;
-        this.placeholder.h = l.h;
-        this.$nextTick(function() {
-          this.isDragging = true;
-        });
-        this.eventBus.emit("updateWidth", this.width);
-      } else {
-        this.$nextTick(function() {
-          this.isDragging = false;
-        });
-      }
-      if (this.responsive)
-        this.responsiveGridLayout();
-      compact(this.layout, this.verticalCompact);
-      this.eventBus.emit("compact");
-      this.updateHeight();
-      if (eventName === "resizeend")
-        this.$emit("layout-updated", this.layout);
+      h || (a.w = n, a.h = r), t === "resizestart" || t === "resizemove" ? (this.placeholder.i = e, this.placeholder.x = i, this.placeholder.y = s, this.placeholder.w = a.w, this.placeholder.h = a.h, this.$nextTick(function() {
+        this.isDragging = !0;
+      }), this.eventBus.emit("updateWidth", this.width)) : this.$nextTick(function() {
+        this.isDragging = !1;
+      }), this.responsive && this.responsiveGridLayout(), f(this.layout, this.verticalCompact), this.eventBus.emit("compact"), this.updateHeight(), t === "resizeend" && this.$emit("layout-updated", this.layout);
     },
+    // finds or generates new layouts for set breakpoints
     responsiveGridLayout() {
-      let newBreakpoint = getBreakpointFromWidth(this.breakpoints, this.width);
-      let newCols = getColsFromBreakpoint(newBreakpoint, this.cols);
-      if (this.lastBreakpoint != null && !this.layouts[this.lastBreakpoint])
-        this.layouts[this.lastBreakpoint] = cloneLayout(this.layout);
-      let layout = findOrGenerateResponsiveLayout(this.originalLayout, this.layouts, this.breakpoints, newBreakpoint, this.lastBreakpoint, newCols, this.verticalCompact);
-      this.layouts[newBreakpoint] = layout;
-      if (this.lastBreakpoint !== newBreakpoint) {
-        this.$emit("breakpoint-changed", newBreakpoint, layout);
-      }
-      this.$emit("update:layout", layout);
-      this.lastBreakpoint = newBreakpoint;
-      this.eventBus.emit("setColNum", getColsFromBreakpoint(newBreakpoint, this.cols));
+      let t = it(this.breakpoints, this.width), e = z(t, this.cols);
+      this.lastBreakpoint != null && !this.layouts[this.lastBreakpoint] && (this.layouts[this.lastBreakpoint] = w(this.layout));
+      let i = st(
+        this.originalLayout,
+        this.layouts,
+        this.breakpoints,
+        t,
+        this.lastBreakpoint,
+        e,
+        this.verticalCompact
+      );
+      this.layouts[t] = i, this.lastBreakpoint !== t && this.$emit("breakpoint-changed", t, i), this.$emit("update:layout", i), this.lastBreakpoint = t, this.eventBus.emit("setColNum", z(t, this.cols));
     },
+    // clear all responsive layouts
     initResponsiveFeatures() {
       this.layouts = Object.assign({}, this.responsiveLayouts);
     },
-    findDifference(layout, originalLayout) {
-      let uniqueResultOne = layout.filter(function(obj) {
-        return !originalLayout.some(function(obj2) {
-          return obj.i === obj2.i;
+    // find difference in layouts
+    findDifference(t, e) {
+      let i = t.filter(function(r) {
+        return !e.some(function(n) {
+          return r.i === n.i;
+        });
+      }), s = e.filter(function(r) {
+        return !t.some(function(n) {
+          return r.i === n.i;
         });
       });
-      let uniqueResultTwo = originalLayout.filter(function(obj) {
-        return !layout.some(function(obj2) {
-          return obj.i === obj2.i;
-        });
-      });
-      return uniqueResultOne.concat(uniqueResultTwo);
+      return i.concat(s);
     }
   }
 });
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_grid_item = resolveComponent("grid-item");
-  return openBlock(), createElementBlock("div", {
+function ot(t, e, i, s, r, n) {
+  const a = _("grid-item");
+  return y(), b("div", {
     class: "vue-grid-layout",
-    style: normalizeStyle(_ctx.mergedStyle)
+    style: S(t.mergedStyle)
   }, [
-    renderSlot(_ctx.$slots, "default", {}, void 0, true),
-    withDirectives(createVNode(_component_grid_item, {
+    $(t.$slots, "default", {}, void 0, !0),
+    j(I(a, {
       class: "vue-grid-placeholder",
-      x: _ctx.placeholder.x,
-      y: _ctx.placeholder.y,
-      w: _ctx.placeholder.w,
-      h: _ctx.placeholder.h,
-      i: _ctx.placeholder.i
+      x: t.placeholder.x,
+      y: t.placeholder.y,
+      w: t.placeholder.w,
+      h: t.placeholder.h,
+      i: t.placeholder.i
     }, null, 8, ["x", "y", "w", "h", "i"]), [
-      [vShow, _ctx.isDragging]
+      [A, t.isDragging]
     ])
   ], 4);
 }
-var GridLayout = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-7d3b3fd8"]]);
-const install = (app) => {
-  app.component("grid-layout", GridLayout);
-  app.component("grid-item", GridItem);
+const lt = /* @__PURE__ */ O(ht, [["render", ot], ["__scopeId", "data-v-0e66beca"]]), wt = (t) => {
+  t.component("grid-layout", lt), t.component("grid-item", X);
 };
-export { GridItem, GridLayout, install as default };
+export {
+  X as GridItem,
+  lt as GridLayout,
+  wt as default
+};
