@@ -12,12 +12,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        '@interactjs/actions/drag',
-        '@interactjs/actions/resize',
-        '@interactjs/dev-tools',
-        '@interactjs/interact',
-        '@interactjs/modifiers',
-        '@interactjs/auto-start',
+        'interactjs',
         'mitt',
         'resize-observer-polyfill',
         'tslib',

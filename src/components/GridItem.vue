@@ -82,12 +82,7 @@
 </style>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import '@interactjs/auto-start'
-import '@interactjs/actions/drag'
-import '@interactjs/actions/resize'
-import '@interactjs/modifiers'
-import '@interactjs/dev-tools'
-import interact from '@interactjs/interact'
+import interact from 'interactjs'
 
 import {setTopLeft, setTopRight, setTransformRtl, setTransform} from '../helpers/utils';
 import {getControlPosition, createCoreData} from '../helpers/draggableUtils';

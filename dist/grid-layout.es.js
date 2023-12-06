@@ -1,25 +1,20 @@
-import { defineComponent as k, openBlock as y, createElementBlock as b, normalizeClass as x, normalizeStyle as S, renderSlot as $, createCommentVNode as Y, resolveComponent as _, withDirectives as j, createVNode as I, vShow as A } from "vue";
-import "@interactjs/auto-start";
-import "@interactjs/actions/drag";
-import "@interactjs/actions/resize";
-import "@interactjs/modifiers";
-import "@interactjs/dev-tools";
-import p from "@interactjs/interact";
-import q from "mitt";
-import F from "resize-observer-polyfill";
-function T(t) {
+import { defineComponent as k, openBlock as y, createElementBlock as w, normalizeClass as R, normalizeStyle as S, renderSlot as $, createCommentVNode as Y, resolveComponent as j, withDirectives as A, createVNode as I, vShow as q } from "vue";
+import p from "interactjs";
+import F from "mitt";
+import T from "resize-observer-polyfill";
+function P(t) {
   let e = 0, i;
   for (let s = 0, r = t.length; s < r; s++)
     i = t[s].y + t[s].h, i > e && (e = i);
   return e;
 }
-function w(t) {
+function b(t) {
   const e = Array(t.length);
   for (let i = 0, s = t.length; i < s; i++)
-    e[i] = P(t[i]);
+    e[i] = G(t[i]);
   return e;
 }
-function P(t) {
+function G(t) {
   return JSON.parse(JSON.stringify(t));
 }
 function M(t, e) {
@@ -29,11 +24,11 @@ function f(t, e) {
   const i = E(t), s = L(t), r = Array(t.length);
   for (let n = 0, a = s.length; n < a; n++) {
     let h = s[n];
-    h.static || (h = G(i, h, e), i.push(h)), r[t.indexOf(h)] = h, h.moved = !1;
+    h.static || (h = _(i, h, e), i.push(h)), r[t.indexOf(h)] = h, h.moved = !1;
   }
   return r;
 }
-function G(t, e, i) {
+function _(t, e, i) {
   if (i)
     for (; e.y > 0 && !m(t, e); )
       e.y--;
@@ -54,7 +49,7 @@ function V(t, e) {
   }
   return t;
 }
-function R(t, e) {
+function x(t, e) {
   return t.find((i) => i.i === e) || { x: 0, y: 0, w: 0, h: 0, i: "" };
 }
 function m(t, e) {
@@ -200,7 +195,7 @@ function z(t, e) {
 }
 function st(t, e, i, s, r, n, a) {
   if (e[s])
-    return w(e[s]);
+    return b(e[s]);
   let h = t;
   const d = N(i), o = d.slice(d.indexOf(s));
   for (let l = 0, u = o.length; l < u; l++) {
@@ -210,7 +205,7 @@ function st(t, e, i, s, r, n, a) {
       break;
     }
   }
-  return h = w(h || []), f(V(h, { cols: n }), a);
+  return h = b(h || []), f(V(h, { cols: n }), a);
 }
 function N(t) {
   return Object.keys(t).sort(function(i, s) {
@@ -633,27 +628,26 @@ const nt = k({
       e.w < this.minW && (e.w = this.minW), e.w > this.maxW && (e.w = this.maxW), e.h < this.minH && (e.h = this.minH), e.h > this.maxH && (e.h = this.maxH), e.h < 1 && (e.h = 1), e.w < 1 && (e.w = 1), (this.innerW !== e.w || this.innerH !== e.h) && this.$emit("resize", this.i, e.h, e.w, t.height, t.width), (this.previousW !== e.w || this.previousH !== e.h) && (this.$emit("resized", this.i, e.h, e.w, t.height, t.width), this.eventBus.emit("resizeEvent", { eventType: "resizeend", i: this.i, x: this.innerX, y: this.innerY, h: e.h, w: e.w }));
     }
   }
-});
-const O = (t, e) => {
+}), O = (t, e) => {
   const i = t.__vccOpts || t;
   for (const [s, r] of e)
     i[s] = r;
   return i;
 };
 function at(t, e, i, s, r, n) {
-  return y(), b("div", {
-    class: x(["vue-grid-item", t.classObj]),
+  return y(), w("div", {
+    class: R(["vue-grid-item", t.classObj]),
     style: S(t.style)
   }, [
     $(t.$slots, "default", {}, void 0, !0),
-    t.resizableAndNotStatic ? (y(), b("span", {
+    t.resizableAndNotStatic ? (y(), w("span", {
       key: 0,
       ref: "handle",
-      class: x(t.resizableHandleClass)
+      class: R(t.resizableHandleClass)
     }, null, 2)) : Y("", !0)
   ], 6);
 }
-const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"]]), ht = k({
+const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-23225a7b"]]), ht = k({
   name: "GridLayout",
   provide() {
     return {
@@ -745,7 +739,7 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
   },
   data() {
     return {
-      eventBus: q(),
+      eventBus: F(),
       width: null,
       mergedStyle: {},
       lastLayoutLength: 0,
@@ -786,7 +780,7 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
     this.$emit("layout-mounted", this.layout), this.$nextTick(function() {
       Z(this.layout), this.originalLayout = this.layout, this.$nextTick(function() {
         t.onWindowResize(), t.initResponsiveFeatures(), f(t.layout, t.verticalCompact), t.$emit("layout-updated", t.layout), t.updateHeight(), t.$nextTick(function() {
-          t.ro = new F(() => {
+          t.ro = new T(() => {
             t.onWindowResize();
           }), t.ro.observe(this.$el);
         });
@@ -849,10 +843,10 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
       this.$el && (this.width = this.$el.offsetWidth), this.eventBus.emit("resizeEvent", {});
     },
     containerHeight() {
-      return this.autoSize ? T(this.layout) * (this.rowHeight + this.margin[1]) + this.margin[1] + "px" : void 0;
+      return this.autoSize ? P(this.layout) * (this.rowHeight + this.margin[1]) + this.margin[1] + "px" : void 0;
     },
     dragEvent(t, e, i, s, r, n) {
-      let a = R(this.layout, e);
+      let a = x(this.layout, e);
       t === "dragmove" || t === "dragstart" ? (this.placeholder.i = e, this.placeholder.x = a.x, this.placeholder.y = a.y, this.placeholder.w = n, this.placeholder.h = r, this.$nextTick(function() {
         this.isDragging = !0;
       }), this.eventBus.emit("updateWidth", this.width)) : this.$nextTick(function() {
@@ -860,7 +854,7 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
       }), this.$emit("update:layout", v(this.layout, a, i, s, !0, this.preventCollision)), f(this.layout, this.verticalCompact), this.eventBus.emit("compact"), this.updateHeight(), t === "dragend" && this.$emit("layout-updated", this.layout);
     },
     resizeEvent(t, e, i, s, r, n) {
-      let a = R(this.layout, e), h;
+      let a = x(this.layout, e), h;
       if (this.preventCollision) {
         const d = D(this.layout, { ...a, w: n, h: r }).filter(
           (o) => o.i !== a.i
@@ -881,7 +875,7 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
     // finds or generates new layouts for set breakpoints
     responsiveGridLayout() {
       let t = it(this.breakpoints, this.width), e = z(t, this.cols);
-      this.lastBreakpoint != null && !this.layouts[this.lastBreakpoint] && (this.layouts[this.lastBreakpoint] = w(this.layout));
+      this.lastBreakpoint != null && !this.layouts[this.lastBreakpoint] && (this.layouts[this.lastBreakpoint] = b(this.layout));
       let i = st(
         this.originalLayout,
         this.layouts,
@@ -913,13 +907,13 @@ const X = /* @__PURE__ */ O(nt, [["render", at], ["__scopeId", "data-v-dbca6792"
   }
 });
 function ot(t, e, i, s, r, n) {
-  const a = _("grid-item");
-  return y(), b("div", {
+  const a = j("grid-item");
+  return y(), w("div", {
     class: "vue-grid-layout",
     style: S(t.mergedStyle)
   }, [
     $(t.$slots, "default", {}, void 0, !0),
-    j(I(a, {
+    A(I(a, {
       class: "vue-grid-placeholder",
       x: t.placeholder.x,
       y: t.placeholder.y,
@@ -927,15 +921,15 @@ function ot(t, e, i, s, r, n) {
       h: t.placeholder.h,
       i: t.placeholder.i
     }, null, 8, ["x", "y", "w", "h", "i"]), [
-      [A, t.isDragging]
+      [q, t.isDragging]
     ])
   ], 4);
 }
-const lt = /* @__PURE__ */ O(ht, [["render", ot], ["__scopeId", "data-v-0e66beca"]]), wt = (t) => {
+const lt = /* @__PURE__ */ O(ht, [["render", ot], ["__scopeId", "data-v-0e66beca"]]), gt = (t) => {
   t.component("grid-layout", lt), t.component("grid-item", X);
 };
 export {
   X as GridItem,
   lt as GridLayout,
-  wt as default
+  gt as default
 };
